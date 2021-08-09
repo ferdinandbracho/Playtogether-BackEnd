@@ -18,7 +18,6 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / '.env')
-print('DJANGO_SECRET_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -41,7 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # My Apps
+    # Installed
+    'rest_framework',
+    'django_countries',
+    # My Apps,
+    'play',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +135,8 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Setting Django-Countries 
+COUNTRIES_FIRST=['MX']
+COUNTRIES_FIRST_BREAK = '- - - - -'
+COUNTRIES_FIRST_REPEAT= True
