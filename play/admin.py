@@ -1,26 +1,26 @@
 from django.contrib import admin
 from .models import (
     #player
-    players,
-    positions,
+    Player,
+    Position,
 
     # field
-    fields,
-    service,
-    addresses_fields,
-    football_types,
+    Field,
+    Service,
+    AddressField,
+    FootballType,
 
     # match
-    matches,
-    teams,
+    Match,
+    Team,
 ) 
 
-admin.site.register(players)
-admin.site.register(positions)
-admin.site.register(fields)
-admin.site.register(service)
-admin.site.register(addresses_fields)
-admin.site.register(football_types)
-admin.site.register(matches)
-admin.site.register(teams)
+admin.site.register(Player)
+admin.site.register(Position)
+admin.site.register(Field)
+admin.site.register(Service)
+admin.site.register(AddressField)
+admin.site.register(FootballType)
+admin.site.register(Match)
+admin.site.register(Team)
 

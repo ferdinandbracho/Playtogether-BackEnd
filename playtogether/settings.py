@@ -30,6 +30,8 @@ DEBUG = bool(os.getenv('DJANGO_DEBUG', True))
 
 ALLOWED_HOSTS = ['*']
 
+# !Cors Headers Settings
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -40,10 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Installed
+    # !3rd Party
     'rest_framework',
     'django_countries',
-    # My Apps,
+    'rest_framework.authtoken',
+    'corsheaders',
+    # !My Apps,
     'play',
 ]
 
@@ -55,7 +59,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # !3rd Party
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES" : (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
 
 ROOT_URLCONF = 'playtogether.urls'
 
@@ -136,7 +148,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Setting Django-Countries 
+# !Setting Django-Countries 
 COUNTRIES_FIRST=['MX']
 COUNTRIES_FIRST_BREAK = '- - - - -'
 COUNTRIES_FIRST_REPEAT= True
