@@ -7,6 +7,7 @@ from django_countries.serializer_fields import CountryField
 
 # !Models
 from .models import (
+    Field,
     Player,
     Match,
     Position,
@@ -103,8 +104,16 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         return instance
 
 # !Match
+
+class FieldListModelSerializer(serializers.ModelSerializer):
+    football_type = serializers.CharField()
+    class Meta:
+        model = Field
+        fields = ['name','football_type']
+
 class MatchListModelSerializer(serializers.ModelSerializer):
-    field = serializers.CharField(read_only=True)
+    field = FieldListModelSerializer()
+
     class Meta:
         model = Match
         fields = ['field','date']
