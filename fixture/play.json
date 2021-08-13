@@ -1,0 +1,296 @@
+[
+{
+  "model": "play.position",
+  "pk": 1,
+  "fields": {
+    "position_name": "Delantero"
+  }
+},
+{
+  "model": "play.position",
+  "pk": 2,
+  "fields": {
+    "position_name": "Defensa"
+  }
+},
+{
+  "model": "play.position",
+  "pk": 3,
+  "fields": {
+    "position_name": "Portero"
+  }
+},
+{
+  "model": "play.position",
+  "pk": 4,
+  "fields": {
+    "position_name": "Mediocampo"
+  }
+},
+{
+  "model": "play.player",
+  "pk": 1,
+  "fields": {
+    "user": 6,
+    "gender": "masculino",
+    "nationality": "MX",
+    "position": 1,
+    "dominant_food": "derecho",
+    "photo": ""
+  }
+},
+{
+  "model": "play.player",
+  "pk": 2,
+  "fields": {
+    "user": 7,
+    "gender": "masculino",
+    "nationality": "MX",
+    "position": 4,
+    "dominant_food": "derecho",
+    "photo": ""
+  }
+},
+{
+  "model": "play.player",
+  "pk": 3,
+  "fields": {
+    "user": 8,
+    "gender": "masculino",
+    "nationality": "MX",
+    "position": 2,
+    "dominant_food": "izquierdo",
+    "photo": ""
+  }
+},
+{
+  "model": "play.addressfield",
+  "pk": 1,
+  "fields": {
+    "city": "ciudad de mexico",
+    "town": "Benito juarez",
+    "street": "alguna",
+    "street_number": "123"
+  }
+},
+{
+  "model": "play.addressfield",
+  "pk": 2,
+  "fields": {
+    "city": "ciudad de mexico",
+    "town": "Cuauhtémoc",
+    "street": "Insurgentes sur",
+    "street_number": "825"
+  }
+},
+{
+  "model": "play.addressfield",
+  "pk": 3,
+  "fields": {
+    "city": "ciudad de mexico",
+    "town": "Cuauhtémoc",
+    "street": "alvaro obrego",
+    "street_number": "77"
+  }
+},
+{
+  "model": "play.footballtype",
+  "pk": 1,
+  "fields": {
+    "name": "7vs7",
+    "max_players": 20,
+    "min_players": 14
+  }
+},
+{
+  "model": "play.footballtype",
+  "pk": 2,
+  "fields": {
+    "name": "5vs5",
+    "max_players": 16,
+    "min_players": 10
+  }
+},
+{
+  "model": "play.footballtype",
+  "pk": 3,
+  "fields": {
+    "name": "11vs11",
+    "max_players": 28,
+    "min_players": 22
+  }
+},
+{
+  "model": "play.service",
+  "pk": 1,
+  "fields": {
+    "service": "Arbitraje"
+  }
+},
+{
+  "model": "play.service",
+  "pk": 2,
+  "fields": {
+    "service": "Estacionamiento"
+  }
+},
+{
+  "model": "play.service",
+  "pk": 3,
+  "fields": {
+    "service": "Regaderas"
+  }
+},
+{
+  "model": "play.service",
+  "pk": 4,
+  "fields": {
+    "service": "Bebederos"
+  }
+},
+{
+  "model": "play.service",
+  "pk": 5,
+  "fields": {
+    "service": "Techo"
+  }
+},
+{
+  "model": "play.field",
+  "pk": 1,
+  "fields": {
+    "name": "kodemiaFut",
+    "rent_cost": 1400.0,
+    "address": 1,
+    "football_type": 1,
+    "photo": "",
+    "fields_services": [
+      1,
+      2,
+      3
+    ]
+  }
+},
+{
+  "model": "play.field",
+  "pk": 2,
+  "fields": {
+    "name": "Playtogether",
+    "rent_cost": 1200.0,
+    "address": 3,
+    "football_type": 2,
+    "photo": "",
+    "fields_services": [
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+},
+{
+  "model": "play.field",
+  "pk": 3,
+  "fields": {
+    "name": "Parque-NutriApp",
+    "rent_cost": 900.0,
+    "address": 2,
+    "football_type": 3,
+    "photo": "",
+    "fields_services": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "play.match",
+  "pk": 2,
+  "fields": {
+    "field": 1,
+    "date": "2021-08-13",
+    "time": "15:04:42",
+    "category": "masculino",
+    "active": true,
+    "team": [
+      1,
+      3
+    ]
+  }
+},
+{
+  "model": "play.match",
+  "pk": 3,
+  "fields": {
+    "field": 2,
+    "date": "2021-08-19",
+    "time": "10:05:00",
+    "category": "mixto",
+    "active": true,
+    "team": [
+      2,
+      3
+    ]
+  }
+},
+{
+  "model": "play.match",
+  "pk": 4,
+  "fields": {
+    "field": 3,
+    "date": "2021-09-01",
+    "time": "18:05:00",
+    "category": "masculino",
+    "active": true,
+    "team": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "play.match",
+  "pk": 5,
+  "fields": {
+    "field": 2,
+    "date": "2021-08-25",
+    "time": "03:00:00",
+    "category": "mixto",
+    "active": true,
+    "team": [
+      1,
+      3
+    ]
+  }
+},
+{
+  "model": "play.team",
+  "pk": 1,
+  "fields": {
+    "name": "KodemiaFC",
+    "players": [
+      1
+    ]
+  }
+},
+{
+  "model": "play.team",
+  "pk": 2,
+  "fields": {
+    "name": "NutriAPP-FC",
+    "players": [
+      2
+    ]
+  }
+},
+{
+  "model": "play.team",
+  "pk": 3,
+  "fields": {
+    "name": "TrabajoAPP-FC",
+    "players": [
+      3
+    ]
+  }
+}
+]
