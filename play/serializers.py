@@ -62,7 +62,7 @@ class UserListModelSerializer(serializers.ModelSerializer):
 
     # ?User_Profile Update
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
-    photo = serializers.CharField()
+    photo = serializers.CharField(allow_blank=True)
     nationality = CountryField(name_only=True)
     class Meta:
         model = Player
@@ -87,10 +87,8 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         player = instance.players
 
         if User.objects.filter(username=validated_data.get('username')).exists():
-            print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             raise serializers.ValidationError("Ese nombre de usuario ya fue tomado. Intenta nuevamente!")
         else:
-            print('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB')
             instance.username = validated_data.get('username', instance.username)   
 
         instance.first_name = validated_data.get('first_name', instance.first_name)
