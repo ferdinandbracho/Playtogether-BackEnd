@@ -116,4 +116,4 @@ class MatchListModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = ['field','date']
+        fields = ['field','date','category']
