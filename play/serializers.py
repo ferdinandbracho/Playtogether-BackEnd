@@ -59,7 +59,7 @@ class UserListModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name','date_joined','players']
+        fields = ['username','first_name', 'last_name','date_joined','players']
 
     # ?User_Profile Update
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
