@@ -3,6 +3,9 @@ from django.db import models
 from django.db.models.deletion import CASCADE
 from django_countries.fields import CountryField
 
+def media_path(instance, filename):
+    return 'user_{0}/avatar'.format(instance.user.id)
+
 
 # !Player
 class  Position(models.Model):
@@ -25,7 +28,7 @@ class Player(models.Model):
         ('izquierdo', 'Izquierdo')
     )
     dominant_food = models.CharField(max_length=50, choices=FOOT, default='Derecho', blank=True)
-    photo = models.ImageField(blank=True)
+    photo = models.ImageField(blank=True, upload_to=media_path,default='avatar_default.png')
 
     def __str__(self):
         return self.user.first_name
@@ -60,7 +63,7 @@ class Field(models.Model):
     rent_cost = models.FloatField()
     address = models.OneToOneField(to=AddressField, on_delete=CASCADE, related_name='fields')
     football_type = models.ForeignKey(to=FootballType, on_delete=models.CASCADE, related_name='fields')
-    photo = models.ImageField(blank=True)
+    photo = models.ImageField(blank=True,upload_to=media_path)
     fields_services = models.ManyToManyField(to=Service, related_name='fields')
 
     def __str__(self):
