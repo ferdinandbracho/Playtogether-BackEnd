@@ -1,3 +1,5 @@
+from pkg_resources import require
+from playtogether.settings import ALLOWED_HOSTS
 from rest_framework import serializers
 from django.db.models.aggregates import Count
 from django.db import IntegrityError
@@ -38,6 +40,7 @@ class PlayerModelSerializer(serializers.ModelSerializer):
     matches = serializers.SerializerMethodField()
     fields_count = serializers.SerializerMethodField()
     matches_count = serializers.SerializerMethodField()
+    photo = serializers.ImageField(use_url=True)
 
     def get_matches(self, obj):
         qs = Match.objects.filter(team__players=obj).order_by('date')
@@ -63,11 +66,11 @@ class UserListModelSerializer(serializers.ModelSerializer):
 
     # ?User_Profile Update
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
-    photo = serializers.CharField(allow_blank=True)
     nationality = CountryField(name_only=True)
+    photo = serializers.ImageField(use_url=True)
     class Meta:
         model = Player
-        fields = ['photo','gender','nationality','position']
+        fields = ['gender','nationality','position','photo']
 
 class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
@@ -76,8 +79,8 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         fields = ['username','first_name','last_name', 'email']
 
 class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
-    user_data = UserPartialUpdateModelSerializer(source='*')
-    player_data = PlayerPartialUpdateModelSerializer(source='players')
+    user_data = UserPartialUpdateModelSerializer(source='*', required=False)
+    player_data = PlayerPartialUpdateModelSerializer(source='players', required=False)
 
     class Meta:
         model = User
@@ -87,10 +90,12 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         player_validated = validated_data.pop('players')
         player = instance.players
 
-        if User.objects.filter(username=validated_data.get('username')).exists():
+        username = User.objects.filter(username=validated_data.get('username'))
+
+        if username.exists() and instance.username != validated_data.get('username'):
             raise serializers.ValidationError("Ese nombre de usuario ya fue tomado. Intenta nuevamente!")
         else:
-            instance.username = validated_data.get('username', instance.username)   
+            instance.username = validated_data.get('username', instance.username)    
 
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
@@ -99,12 +104,13 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         player.gender = player_validated.get('gender',player.gender)
         player.nationality = player_validated.get('nationality',player.nationality)
         player.position = player_validated.get('position',player.position)
+        player.photo = player_validated.get('photo',player.photo)
         player.save()
 
         return instance
 
-# !Match
 
+# !Match
 class FieldListModelSerializer(serializers.ModelSerializer):
     football_type = serializers.CharField()
     class Meta:

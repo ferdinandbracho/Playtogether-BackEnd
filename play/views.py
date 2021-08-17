@@ -1,5 +1,6 @@
 from django.db.models import query
-from rest_framework import generics, serializers
+from rest_framework import generics
+from rest_framework.parsers import FormParser, MultiPartParser
 
 #!Models
 from .models import (
@@ -14,7 +15,6 @@ from .serializers import (
     UserModelSerializer,
     UserListModelSerializer,
     UserPartialUpdateModelSerializer,
-    PlayerPartialUpdateModelSerializer,
 
     # !match
     MatchListModelSerializer,
@@ -32,7 +32,10 @@ class UserRetriveAPIView(generics.RetrieveAPIView):
 class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserPartialUpdateModelSerializer
-    http_method_names=['get','patch']
+    http_method_names=['get','patch','put']
+    parser_classes = [FormParser, MultiPartParser]
+
+
 
 # !Match
 class MatchListAPIView(generics.ListAPIView):
