@@ -12,7 +12,6 @@ from .models import (
     Field,
     Player,
     Match,
-    Position,
 )
 from django.contrib.auth.models import User
 
@@ -122,4 +121,4 @@ class MatchListModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = ['field','date','category']
+        fields = ['id','field','date','time','category']
