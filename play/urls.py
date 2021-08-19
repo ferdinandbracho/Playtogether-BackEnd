@@ -1,9 +1,5 @@
-from os import name
-from django.urls import path
-from rest_framework import parsers
 
-# Authentication
-from rest_framework.authtoken import views as auth_views
+from django.urls import path
 
 # Views 
 from .views import (
@@ -11,6 +7,9 @@ from .views import (
     UserCreateAPIView,
     UserRetriveAPIView,
     UserPartialUpdateAPIView,
+    IdRetriveAuthToken,
+    PlayerPhotoRetriveAPIView,
+    PlayerPositionListAPIView,
 
     # !Match
     MatchListAPIView,
@@ -18,12 +17,14 @@ from .views import (
 
 urlpatterns = [
     # !User
-    path('login/', auth_views.obtain_auth_token, name='login'),
+    path('login/', IdRetriveAuthToken.as_view(), name='login'),
     path('signup/', UserCreateAPIView.as_view(), name='signup'),
 
     # !Player
     path('players/<int:pk>', UserRetriveAPIView.as_view(), name='player' ),
     path('players/update/<int:pk>', UserPartialUpdateAPIView.as_view(), name='player_update'),
+    path('players/photo/<int:pk>', PlayerPhotoRetriveAPIView.as_view(), name='player_photo'),
+    path('players/position/', PlayerPositionListAPIView.as_view(), name='player_list_position'),
 
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
