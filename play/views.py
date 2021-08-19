@@ -4,6 +4,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 
 #!Models
 from .models import (
+    Field,
     Match,
     Player,
 ) 
@@ -18,6 +19,9 @@ from .serializers import (
 
     # !match
     MatchListModelSerializer,
+
+    # !Field
+    FieldListModelSerializer,
 )
 
 # !User - Player 
@@ -43,5 +47,7 @@ class MatchListAPIView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.filter(active=True).order_by('date', 'time')
 
-    
-    
+# !Field 
+class FieldListAPIView(generics.ListAPIView):
+    queryset = Field.objects.all()
+    serializer_class = FieldListModelSerializer
