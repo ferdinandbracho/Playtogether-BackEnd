@@ -1,6 +1,7 @@
 from django.db.models import query
 from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 
 #!Models
 from .models import (
@@ -28,12 +29,14 @@ class UserCreateAPIView(generics.CreateAPIView):
 class UserRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserListModelSerializer
+    permission_classes = [IsAuthenticated]
 
 class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserPartialUpdateModelSerializer
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
+    permission_classes = [IsAuthenticated]
 
 # !Match
 class MatchListAPIView(generics.ListAPIView):
