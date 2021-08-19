@@ -1,4 +1,6 @@
 from pkg_resources import require
+from rest_framework.fields import ImageField
+from rest_framework.generics import DestroyAPIView
 from playtogether.settings import ALLOWED_HOSTS
 from rest_framework import serializers
 from django.db.models.aggregates import Count
@@ -12,6 +14,7 @@ from .models import (
     Field,
     Player,
     Match,
+    Position,
 )
 from django.contrib.auth.models import User
 
@@ -51,7 +54,7 @@ class PlayerModelSerializer(serializers.ModelSerializer):
 
     def get_fields_count(self, obj):
         return Match.objects.filter(team__players=obj).aggregate(Count('field_id', distinct=True))['field_id__count']
-        
+    
     class Meta:
         model = Player
         fields= ['photo','dominant_food','position','matches','matches_count','fields_count'] 
@@ -67,12 +70,14 @@ class UserListModelSerializer(serializers.ModelSerializer):
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
     nationality = CountryField(name_only=True)
     photo = serializers.ImageField(use_url=True)
+
     class Meta:
         model = Player
         fields = ['gender','nationality','position','photo']
 
 class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
+
     class Meta:
         model = User
         fields = ['username','first_name','last_name', 'email']
@@ -108,6 +113,25 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
 
         return instance
 
+        # ? User photo retrive for navbar
+class PlayerPhotoModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(use_url=True)
+
+    class Meta:
+        model = Player
+        fields = ['photo']
+
+class UserPhotoModelSerializer(serializers.ModelSerializer):
+    player_photo = PlayerPhotoModelSerializer(source='players')
+
+    class Meta:
+        model = User
+        fields = ['id','player_photo']
+
+class PlayerPositionModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = '__all__'
 
 # !Match
 class FieldListModelSerializer(serializers.ModelSerializer):
