@@ -35,10 +35,13 @@ class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
 
-
-
 # !Match
 class MatchListAPIView(generics.ListAPIView):
     queryset =  Match.objects.all()
     serializer_class = MatchListModelSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(active=True).order_by('date', 'time')
+
+    
     
