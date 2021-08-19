@@ -6,6 +6,9 @@ from django_countries.fields import CountryField
 def media_path(instance, filename):
     return 'user_{0}/avatar'.format(instance.user.id)
 
+def media_path_field(instance, filename):
+    return 'field_{0}/img'.format(instance.id)
+
 
 # !Player
 class  Position(models.Model):
@@ -63,7 +66,7 @@ class Field(models.Model):
     rent_cost = models.FloatField()
     address = models.OneToOneField(to=AddressField, on_delete=CASCADE, related_name='fields')
     football_type = models.ForeignKey(to=FootballType, on_delete=models.CASCADE, related_name='fields')
-    photo = models.ImageField(blank=True,upload_to=media_path)
+    photo = models.ImageField(blank=True, upload_to=media_path_field, default='field_default.jpg')
     fields_services = models.ManyToManyField(to=Service, related_name='fields')
 
     def __str__(self):

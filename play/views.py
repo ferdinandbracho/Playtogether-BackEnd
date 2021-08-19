@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 #!Models
 from .models import (
+    Field,
     Match,
     Player,
     Position,
@@ -25,6 +26,9 @@ from .serializers import (
 
     # !match
     MatchListModelSerializer,
+
+    # !Field
+    FieldListModelSerializer,
 )
 
 # !User - Player 
@@ -73,5 +77,7 @@ class MatchListAPIView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.filter(active=True).order_by('date', 'time')
 
-    
-    
+# !Field 
+class FieldListAPIView(generics.ListAPIView):
+    queryset = Field.objects.all()
+    serializer_class = FieldListModelSerializer

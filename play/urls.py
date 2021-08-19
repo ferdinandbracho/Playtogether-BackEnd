@@ -13,6 +13,9 @@ from .views import (
 
     # !Match
     MatchListAPIView,
+
+    # !Field
+    FieldListAPIView,
 )
 
 urlpatterns = [
@@ -28,4 +31,7 @@ urlpatterns = [
 
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
+
+   # !Field
+   path('fields/', FieldListAPIView.as_view(), name='field_list')
 ]

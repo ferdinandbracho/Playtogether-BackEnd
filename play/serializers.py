@@ -1,3 +1,5 @@
+from re import S
+from django.db.models.fields import CharField
 from pkg_resources import require
 from rest_framework.fields import ImageField
 from rest_framework.generics import DestroyAPIView
@@ -15,6 +17,7 @@ from .models import (
     Player,
     Match,
     Position,
+    Service,
 )
 from django.contrib.auth.models import User
 
@@ -134,15 +137,31 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 # !Match
-class FieldListModelSerializer(serializers.ModelSerializer):
+class FieldSelectedListModelSerializer(serializers.ModelSerializer):
     football_type = serializers.CharField()
     class Meta:
         model = Field
         fields = ['name','football_type']
 
 class MatchListModelSerializer(serializers.ModelSerializer):
-    field = FieldListModelSerializer()
+    field = FieldSelectedListModelSerializer()
 
     class Meta:
         model = Match
         fields = ['id','field','date','time','category']
+
+# !Field
+class ServiceRetriveModelSerializer(serializers.ModelSerializer):
+    service = serializers.CharField()
+    class Meta:
+        model = Service
+        fields = ['service']
+
+class FieldListModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(use_url=True)
+    address = serializers.CharField()
+    football_type = serializers.CharField()
+    services = serializers.StringRelatedField(many=True, source='fields_services')
+    class Meta:
+        model = Field
+        fields = ['name','rent_cost','address','football_type','photo','services']
