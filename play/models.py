@@ -43,6 +43,7 @@ class AddressField(models.Model):
     town = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
     street_number = models.CharField(max_length=10)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f'Delegacion: {self.town} - Calle: {self.street} - Exterior: {self.street_number}'
@@ -68,6 +69,7 @@ class Field(models.Model):
     football_type = models.ForeignKey(to=FootballType, on_delete=models.CASCADE, related_name='fields')
     photo = models.ImageField(blank=True, upload_to=media_path_field, default='field_default.jpg')
     fields_services = models.ManyToManyField(to=Service, related_name='fields')
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -85,13 +87,15 @@ class Match(models.Model):
     category = models.CharField(max_length=30, choices=CATEGORY)
     active = models.BooleanField(default=True)
     team = models.ManyToManyField(to='Team',related_name='matches')
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Partido: {self.id} - Fecha:{self.date} - Hora:{self.time}'
     
 class Team(models.Model):
     name = models.CharField(max_length=50)
-    players = models.ManyToManyField(to=Player, related_name='teams')
+    players = models.ManyToManyField(to=Player, related_name='teams', blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

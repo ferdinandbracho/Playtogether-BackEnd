@@ -26,10 +26,11 @@ from .serializers import (
 
     # !match
     MatchListModelSerializer,
-    FieldRetriveModelSerializer,
+    MatchCreationModelSerializer,
 
     # !Field
     FieldListModelSerializer,
+    FieldRetriveModelSerializer,
 )
 
 # !User - Player 
@@ -77,6 +78,10 @@ class MatchListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(active=True).order_by('date', 'time')
+
+class MatchCreationAPIView(generics.CreateAPIView):
+    queryset = Match.objects.all()
+    serializer_class = MatchCreationModelSerializer
 
 # !Field 
 class FieldListAPIView(generics.ListAPIView):

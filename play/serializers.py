@@ -1,12 +1,6 @@
-from re import M, S
-from django.db.models.fields import CharField
-from pkg_resources import require
-from rest_framework.fields import ImageField
-from rest_framework.generics import DestroyAPIView
-from playtogether.settings import ALLOWED_HOSTS
+
 from rest_framework import serializers
 from django.db.models.aggregates import Count
-from django.db import IntegrityError
 
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
@@ -18,6 +12,7 @@ from .models import (
     Match,
     Position,
     Service,
+    Team,
 )
 from django.contrib.auth.models import User
 
@@ -177,8 +172,19 @@ class MatchListModelSerializer(serializers.ModelSerializer):
         fields = ['id','field','date','time','category']
 
 class MatchCreationModelSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
+    time = serializers.TimeField(required=True, input_formats=['%H:%M'])
+    category = serializers.ChoiceField(choices=Match.CATEGORY)
     class Meta:
         model = Match
-        fields = ['fields','data','time','category']
+        fields = ['field','date','time','category']
+
     def create(self, validated_data):
-        pass
+        match = Match.objects.create(**validated_data)
+        match.save()
+        team_a = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_a')
+        team_a.save()
+        team_b = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_b')
+        team_b.save()
+        match.team.add(team_a, team_b)
+        return match
