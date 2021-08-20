@@ -45,7 +45,7 @@ class AddressField(models.Model):
     street_number = models.CharField(max_length=10)
 
     def __str__(self) -> str:
-        return f'Calle: {self.street} - Exterior: {self.street_number}'
+        return f'Delegacion: {self.town} - Calle: {self.street} - Exterior: {self.street_number}'
 
 class FootballType(models.Model):
     name = models.CharField(max_length=50)

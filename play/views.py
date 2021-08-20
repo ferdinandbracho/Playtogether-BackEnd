@@ -1,5 +1,5 @@
 
-from rest_framework import generics
+from rest_framework import generics, serializers
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -26,6 +26,7 @@ from .serializers import (
 
     # !match
     MatchListModelSerializer,
+    FieldRetriveModelSerializer,
 
     # !Field
     FieldListModelSerializer,
@@ -81,3 +82,7 @@ class MatchListAPIView(generics.ListAPIView):
 class FieldListAPIView(generics.ListAPIView):
     queryset = Field.objects.all()
     serializer_class = FieldListModelSerializer
+
+class FieldRetriveAPIView(generics.RetrieveAPIView):
+    queryset = Field.objects.all()
+    serializer_class = FieldRetriveModelSerializer
