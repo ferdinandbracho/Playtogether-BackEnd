@@ -1,4 +1,4 @@
-from re import S
+from re import M, S
 from django.db.models.fields import CharField
 from pkg_resources import require
 from rest_framework.fields import ImageField
@@ -136,6 +136,32 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
         model = Position
         fields = '__all__'
 
+
+# !Field
+class ServiceRetriveModelSerializer(serializers.ModelSerializer):
+    service = serializers.CharField()
+    class Meta:
+        model = Service
+        fields = ['service']
+
+class FieldRetriveModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(use_url=True)
+    address = serializers.CharField()
+    football_type = serializers.CharField()
+    services = serializers.StringRelatedField(many=True, source='fields_services')
+    class Meta:
+        model = Field
+        fields = ['name','rent_cost','address','football_type','photo','services']
+
+class FieldListModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(use_url=True)
+    address = serializers.CharField()
+    football_type = serializers.CharField()
+
+    class Meta:
+        model = Field
+        fields = ['id','name','address','football_type','photo']
+
 # !Match
 class FieldSelectedListModelSerializer(serializers.ModelSerializer):
     football_type = serializers.CharField()
@@ -150,18 +176,9 @@ class MatchListModelSerializer(serializers.ModelSerializer):
         model = Match
         fields = ['id','field','date','time','category']
 
-# !Field
-class ServiceRetriveModelSerializer(serializers.ModelSerializer):
-    service = serializers.CharField()
+class MatchCreationModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Service
-        fields = ['service']
-
-class FieldListModelSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField(use_url=True)
-    address = serializers.CharField()
-    football_type = serializers.CharField()
-    services = serializers.StringRelatedField(many=True, source='fields_services')
-    class Meta:
-        model = Field
-        fields = ['name','rent_cost','address','football_type','photo','services']
+        model = Match
+        fields = ['fields','data','time','category']
+    def create(self, validated_data):
+        pass
