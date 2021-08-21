@@ -1,10 +1,11 @@
 
-from rest_framework import generics, serializers
+from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+import datetime as dt
 
 #!Models
 from .models import (
@@ -60,7 +61,7 @@ class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = UserPartialUpdateModelSerializer
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 class PlayerPhotoRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -77,7 +78,8 @@ class MatchListAPIView(generics.ListAPIView):
     serializer_class = MatchListModelSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(active=True).order_by('date', 'time')
+        now = dt.datetime.now()
+        return self.queryset.filter(active=True).order_by('date', 'time').filter(date__gte=now, time__gte=now)
 
 class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()

@@ -1,6 +1,8 @@
 
+from django.utils.translation import activate
 from rest_framework import serializers
 from django.db.models.aggregates import Count
+import datetime as dt
 
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
@@ -68,6 +70,7 @@ class UserListModelSerializer(serializers.ModelSerializer):
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
     nationality = CountryField(name_only=True)
     photo = serializers.ImageField(use_url=True)
+    gender = serializers.ChoiceField(choices=Player.GENDER)
 
     class Meta:
         model = Player
@@ -81,14 +84,15 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         fields = ['username','first_name','last_name', 'email']
 
 class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
-    user_data = UserPartialUpdateModelSerializer(source='*', required=False)
-    player_data = PlayerPartialUpdateModelSerializer(source='players', required=False)
+    user_data = UserPartialUpdateModelSerializer(source='*')
+    player_data = PlayerPartialUpdateModelSerializer(source='players')
 
     class Meta:
         model = User
         fields = ['user_data','player_data']
 
     def update(self, instance, validated_data):
+        validated_data
         player_validated = validated_data.pop('players')
         player = instance.players
 
@@ -187,4 +191,4 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
         team_b = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_b')
         team_b.save()
         match.team.add(team_a, team_b)
-        return match
+        return match    
