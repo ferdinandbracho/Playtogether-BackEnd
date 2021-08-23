@@ -78,8 +78,10 @@ class MatchListAPIView(generics.ListAPIView):
     serializer_class = MatchListModelSerializer
 
     def get_queryset(self):
-        now = dt.datetime.now()
-        return self.queryset.filter(active=True).order_by('date', 'time').filter(date__gte=now, time__gte=now)
+        qs = Match.objects.all()
+        for match in qs:
+            match.datetime_checker()    
+        return self.queryset.filter(active=True).order_by('date', 'time')
 
 class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
