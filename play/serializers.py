@@ -1,8 +1,8 @@
 
-from django.utils.translation import activate
+from re import M
 from rest_framework import serializers
 from django.db.models.aggregates import Count
-import datetime as dt
+
 
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
@@ -170,10 +170,12 @@ class FieldSelectedListModelSerializer(serializers.ModelSerializer):
 
 class MatchListModelSerializer(serializers.ModelSerializer):
     field = FieldSelectedListModelSerializer()
+    date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
+    time = serializers.TimeField(required=True, input_formats=['%H:%M'])
 
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category']
+        fields = ['id','field','date','time','category','active']
 
 class MatchCreationModelSerializer(serializers.ModelSerializer):
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
@@ -184,6 +186,12 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
         fields = ['field','date','time','category']
 
     def create(self, validated_data):
+
+        qs = Match.objects.all()
+        for match in qs:
+            if match.date == validated_data['date'] and match.time == validated_data['time']:
+                raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
+
         match = Match.objects.create(**validated_data)
         match.save()
         team_a = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_a')

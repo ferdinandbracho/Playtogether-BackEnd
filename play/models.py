@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django_countries.fields import CountryField
+import datetime as dt
 
 def media_path(instance, filename):
     return 'user_{0}/avatar'.format(instance.user.id)
@@ -91,6 +92,23 @@ class Match(models.Model):
 
     def __str__(self):
         return f'Partido: {self.id} - Fecha:{self.date} - Hora:{self.time}'
+
+    def datetime_checker(self):
+        now = dt.datetime.today()
+        qs = Match.objects.all()
+        for match in qs:
+            if (
+                    match not in qs.filter(date__gte=now.date()) or 
+                    match.date == now.date() and 
+                    match.time < now.time()
+                ):
+                match.active = False
+                match.save()
+            else:            
+                match.active = True
+                match.save()
+        return self
+
     
 class Team(models.Model):
     name = models.CharField(max_length=50)
