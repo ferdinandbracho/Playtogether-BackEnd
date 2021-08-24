@@ -1,5 +1,4 @@
 
-from re import M
 from rest_framework import serializers
 from django.db.models.aggregates import Count
 
@@ -10,6 +9,7 @@ from django_countries.serializer_fields import CountryField
 # !Models
 from .models import (
     Field,
+    FootballType,
     Player,
     Match,
     Position,
@@ -38,11 +38,11 @@ class UserModelSerializer(serializers.ModelSerializer):
 
     # ?User_Player Profile 
 class PlayerModelSerializer(serializers.ModelSerializer):
+    player_id = serializers.CharField(source='id')
     position = serializers.CharField()
     matches = serializers.SerializerMethodField()
     fields_count = serializers.SerializerMethodField()
     matches_count = serializers.SerializerMethodField()
-    photo = serializers.ImageField(use_url=True)
 
     def get_matches(self, obj):
         qs = Match.objects.filter(team__players=obj).order_by('date')
@@ -57,7 +57,7 @@ class PlayerModelSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Player
-        fields= ['photo','dominant_food','position','matches','matches_count','fields_count'] 
+        fields= ['player_id','dominant_food','position','matches','matches_count','fields_count'] 
 
 class UserListModelSerializer(serializers.ModelSerializer):
     players = PlayerModelSerializer()
@@ -78,6 +78,7 @@ class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
 
 class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
+    email = serializers.EmailField(read_only=True)
 
     class Meta:
         model = User
@@ -115,21 +116,6 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
 
         return instance
 
-        # ? User photo retrive for navbar
-class PlayerPhotoModelSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField(use_url=True)
-
-    class Meta:
-        model = Player
-        fields = ['photo']
-
-class UserPhotoModelSerializer(serializers.ModelSerializer):
-    player_photo = PlayerPhotoModelSerializer(source='players')
-
-    class Meta:
-        model = User
-        fields = ['id','player_photo']
-
 class PlayerPositionModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
@@ -144,22 +130,20 @@ class ServiceRetriveModelSerializer(serializers.ModelSerializer):
         fields = ['service']
 
 class FieldRetriveModelSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField(use_url=True)
     address = serializers.CharField()
     football_type = serializers.CharField()
     services = serializers.StringRelatedField(many=True, source='fields_services')
     class Meta:
         model = Field
-        fields = ['name','rent_cost','address','football_type','photo','services']
+        fields = ['id','name','rent_cost','address','football_type','services']
 
 class FieldListModelSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField(use_url=True)
     address = serializers.CharField()
     football_type = serializers.CharField()
 
     class Meta:
         model = Field
-        fields = ['id','name','address','football_type','photo']
+        fields = ['id','name','address','football_type']
 
 # !Match
 class FieldSelectedListModelSerializer(serializers.ModelSerializer):
@@ -181,12 +165,12 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
     time = serializers.TimeField(required=True, input_formats=['%H:%M'])
     category = serializers.ChoiceField(choices=Match.CATEGORY)
+
     class Meta:
         model = Match
         fields = ['field','date','time','category']
 
     def create(self, validated_data):
-
         qs = Match.objects.all()
         for match in qs:
             if match.date == validated_data['date'] and match.time == validated_data['time']:
