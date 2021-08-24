@@ -8,7 +8,6 @@ from .views import (
     UserRetriveAPIView,
     UserPartialUpdateAPIView,
     IdRetriveAuthToken,
-    PlayerPhotoRetriveAPIView,
     PlayerPositionListAPIView,
 
     # !Match
@@ -28,7 +27,6 @@ urlpatterns = [
     # !Player
     path('players/<int:pk>', UserRetriveAPIView.as_view(), name='player' ),
     path('players/update/<int:pk>', UserPartialUpdateAPIView.as_view(), name='player_update'),
-    path('players/photo/<int:pk>', PlayerPhotoRetriveAPIView.as_view(), name='player_photo'),
     path('players/position/', PlayerPositionListAPIView.as_view(), name='player_list_position'),
 
     # !Match

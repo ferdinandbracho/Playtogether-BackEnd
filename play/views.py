@@ -22,7 +22,6 @@ from .serializers import (
     UserModelSerializer,
     UserListModelSerializer,
     UserPartialUpdateModelSerializer,
-    UserPhotoModelSerializer,
     PlayerPositionModelSerializer,
 
     # !match
@@ -61,11 +60,6 @@ class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = UserPartialUpdateModelSerializer
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
-    # permission_classes = [IsAuthenticated]
-
-class PlayerPhotoRetriveAPIView(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserPhotoModelSerializer
     permission_classes = [IsAuthenticated]
 
 class PlayerPositionListAPIView(generics.ListAPIView):
