@@ -1,6 +1,7 @@
 
 from rest_framework import serializers
 from django.db.models.aggregates import Count
+import datetime as dt
 
 
 # !Django-Countries
@@ -170,10 +171,20 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
         model = Match
         fields = ['field','date','time','category']
 
+
     def create(self, validated_data):
+        duration = FootballType.objects.get(fields=validated_data['field']).duration
+        final = (
+            (dt.datetime.combine(dt.date(1,1,1),validated_data['time']) + 
+            dt.timedelta(minutes=duration)).time()
+        )
+
         qs = Match.objects.all()
         for match in qs:
-            if match.date == validated_data['date'] and match.time == validated_data['time']:
+            if (
+                match.date == validated_data['date'] and match.field == validated_data['field'] and 
+                match.time <= validated_data['time'] <= final
+                ):
                 raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
 
         match = Match.objects.create(**validated_data)
