@@ -51,6 +51,7 @@ class AddressField(models.Model):
 
 class FootballType(models.Model):
     name = models.CharField(max_length=50)
+    duration = models.IntegerField()
     max_players = models.IntegerField()
     min_players = models.IntegerField()
 
