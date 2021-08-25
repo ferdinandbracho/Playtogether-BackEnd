@@ -74,8 +74,30 @@ class MatchListAPIView(generics.ListAPIView):
     def get_queryset(self):
         qs = Match.objects.all()
         for match in qs:
-            match.datetime_checker()    
-        return self.queryset.filter(active=True).order_by('date', 'time')
+            match.datetime_checker()   
+
+        filters = {}
+
+        category = self.request.query_params.get('category')
+        if category:
+            filters['category'] = category
+
+        football_type = self.request.query_params.get('football_type')
+        if football_type:
+            filters['field__football_type__name'] = football_type
+
+        field = self.request.query_params.get('field')
+        if field:
+            filters['field__name'] = field
+        
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        if start_date:
+            filters['date__range'] = (start_date, end_date)
+
+
+        filters['active'] = True
+        return self.queryset.filter(**filters).order_by('date', 'time')
 
 class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
