@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.deletion import CASCADE
 from django_countries.fields import CountryField
 import datetime as dt
+from django.core.exceptions import ValidationError
 
 def media_path(instance, filename):
     return 'user_{0}/avatar'.format(instance.user.id)
@@ -10,6 +11,12 @@ def media_path(instance, filename):
 def media_path_field(instance, filename):
     return 'field_{0}/img'.format(instance.id)
 
+def validate_media_size(value):
+    media_size = value.size
+    if media_size > 2097125:
+        raise ValidationError('El tamano maximo de la imagen a cargar es de 2MB')
+    else:
+        return value
 
 # !Player
 class  Position(models.Model):
@@ -32,7 +39,7 @@ class Player(models.Model):
         ('izquierdo', 'Izquierdo')
     )
     dominant_food = models.CharField(max_length=50, choices=FOOT, default='Derecho', blank=True)
-    photo = models.ImageField(blank=True, upload_to=media_path,default='avatar_default.png')
+    photo = models.ImageField(blank=True, upload_to=media_path,default='avatar_default.png', validators=[validate_media_size])
 
     def __str__(self):
         return self.user.first_name

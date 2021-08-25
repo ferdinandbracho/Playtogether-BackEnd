@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from django.db.models.aggregates import Count
 import datetime as dt
-
+from .models import validate_media_size
 
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
@@ -70,7 +70,7 @@ class UserListModelSerializer(serializers.ModelSerializer):
     # ?User_Profile Update
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
     nationality = CountryField(name_only=True)
-    photo = serializers.ImageField(use_url=True)
+    photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
     gender = serializers.ChoiceField(choices=Player.GENDER)
 
     class Meta:
@@ -169,7 +169,7 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = ['field','date','time','category']
+        fields = ['id','field','date','time','category']
 
 
     def create(self, validated_data):
