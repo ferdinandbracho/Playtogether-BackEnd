@@ -1,11 +1,11 @@
 
-from django.db.models import query
 from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+import datetime as dt
 
 #!Models
 from .models import (
@@ -65,8 +65,6 @@ class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     parser_classes = [FormParser, MultiPartParser]
     permission_classes = [IsAuthenticated]
     
-    
-
 class PlayerPositionListAPIView(generics.ListAPIView):
     queryset = Position.objects.all()
     serializer_class = PlayerPositionModelSerializer
@@ -78,31 +76,31 @@ class MatchListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         qs = Match.objects.all()
-        for match in qs:
-            match.datetime_checker()   
+        # for match in qs:
+            # match.datetime_checker()   
 
         filters = {}
 
-        category = self.request.query_params.get('category')
+        category = self.request.GET.getlist('category')
         if category:
-            filters['category'] = category
+            filters['category__in'] = category
 
-        football_type = self.request.query_params.get('football_type')
+        football_type = self.request.GET.getlist('football_type')
         if football_type:
-            filters['field__football_type__name'] = football_type
+            filters['field__football_type__name__in'] = football_type
 
-        field = self.request.query_params.get('field')
+        field = self.request.GET.getlist('field')
         if field:
-            filters['field__name'] = field
+            filters['field__name__in'] = field
         
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
         if start_date:
             filters['date__range'] = (start_date, end_date)
 
-
-        filters['active'] = True
-        return self.queryset.filter(**filters).order_by('date', 'time')
+        now = dt.datetime.today()
+        # filters['active'] = True
+        return self.queryset.filter(**filters).order_by('date', 'time').filter(date__gte=now, time__gte=now)
 
 class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
@@ -111,7 +109,15 @@ class MatchCreationAPIView(generics.CreateAPIView):
 class MatchPlayerRetriveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchTeamPlayerModelSerializer
-    http_method_names=['get','patch']
+    http_method_names=['get','patch'] 
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+
+        match = Match.objects.get(id=self.kwargs.get('pk'))
+        match.datetime_checker()
+        return super().get_queryset()
+
 
 # !Field 
 class FieldListAPIView(generics.ListAPIView):

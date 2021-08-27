@@ -38,7 +38,8 @@ class UserModelSerializer(serializers.ModelSerializer):
 
     def create(self, validate_data):
         user = User.objects.create_user(**validate_data)
-        return Response('Creado con exito!')
+        Player.objects.create(user=user)
+        return user
 
     # ?User_Player Profile 
 class PlayerModelSerializer(serializers.ModelSerializer):
@@ -98,6 +99,10 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         validated_data
+        user = self.context['request'].user.id
+        if user != instance.id:
+            raise serializers.ValidationError({"Fail":"Not your profile"})
+
         player_validated = validated_data.pop('players')
         player = instance.players
 
@@ -161,7 +166,7 @@ class MatchListModelSerializer(serializers.ModelSerializer):
     time = serializers.TimeField(required=True, input_formats=['%H:%M'])
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category','active']
+        fields = ['id','field','date','time','category']
 
 class MatchCreationModelSerializer(serializers.ModelSerializer):
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
@@ -232,7 +237,7 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
         user = self.context['request'].user.id
         if not user:
             raise serializers.ValidationError("Para acceder a esta opcion debes iniciar sesion")
-            
+
         player = Player.objects.get(user=self.context['request'].user.id)
         name = validated_data['team'][0].get('name')
         team = Team.objects.get(name=name)
@@ -244,5 +249,3 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
             team.save()
 
         return instance
-
-

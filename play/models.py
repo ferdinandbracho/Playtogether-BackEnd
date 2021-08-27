@@ -33,7 +33,7 @@ class Player(models.Model):
     )
     gender = models.CharField(max_length=50, choices=GENDER, default='Masculino', blank=True) 
     nationality = CountryField()
-    position = models.ForeignKey(to=Position, on_delete=CASCADE, related_name='players', blank=True)
+    position = models.ForeignKey(to=Position,default=1,on_delete=CASCADE, related_name='players', blank=True, null=True)
     FOOT = (
         ('derecho', 'Derecho'),
         ('izquierdo', 'Izquierdo')
@@ -89,8 +89,8 @@ class Match(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=False)
     time = models.TimeField(auto_now=False, auto_now_add=False)
     CATEGORY = (
-        ('masculino', 'Masculino'),
-        ('femenino', 'Femenino'),
+        ('varonil', 'Varonil'),
+        ('femenil', 'Femenil'),
         ('mixto', 'Mixto')
     )
     category = models.CharField(max_length=30, choices=CATEGORY)
