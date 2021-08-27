@@ -63,7 +63,7 @@ class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = UserPartialUpdateModelSerializer
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     
 
@@ -109,9 +109,9 @@ class MatchCreationAPIView(generics.CreateAPIView):
     serializer_class = MatchCreationModelSerializer
 
 class MatchPlayerRetriveUpdateAPIView(generics.RetrieveUpdateAPIView):
-    # queryset = Match.objects.all()
     queryset = Match.objects.all()
     serializer_class = MatchTeamPlayerModelSerializer
+    http_method_names=['get','patch']
 
 # !Field 
 class FieldListAPIView(generics.ListAPIView):
