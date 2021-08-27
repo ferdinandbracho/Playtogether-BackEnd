@@ -1,8 +1,11 @@
 
+from re import S
+from django.db.models.fields import CharField
 from rest_framework import serializers
 from django.db.models.aggregates import Count
 import datetime as dt
 from .models import validate_media_size
+from rest_framework.response import Response
 
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
@@ -35,7 +38,7 @@ class UserModelSerializer(serializers.ModelSerializer):
 
     def create(self, validate_data):
         user = User.objects.create_user(**validate_data)
-        return user
+        return Response('Creado con exito!')
 
     # ?User_Player Profile 
 class PlayerModelSerializer(serializers.ModelSerializer):
@@ -124,16 +127,15 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
 
 
 # !Field
-class ServiceRetriveModelSerializer(serializers.ModelSerializer):
-    service = serializers.CharField()
+class FootballTypeRetriveModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Service
-        fields = ['service']
+        model = FootballType
+        fields = '__all__'
 
 class FieldRetriveModelSerializer(serializers.ModelSerializer):
     address = serializers.CharField()
-    football_type = serializers.CharField()
-    services = serializers.StringRelatedField(many=True, source='fields_services')
+    football_type = FootballTypeRetriveModelSerializer()
+    services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
     class Meta:
         model = Field
         fields = ['id','name','rent_cost','address','football_type','services']
@@ -157,7 +159,6 @@ class MatchListModelSerializer(serializers.ModelSerializer):
     field = FieldSelectedListModelSerializer()
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
     time = serializers.TimeField(required=True, input_formats=['%H:%M'])
-
     class Meta:
         model = Match
         fields = ['id','field','date','time','category','active']
@@ -195,3 +196,53 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
         team_b.save()
         match.team.add(team_a, team_b)
         return match    
+
+    # ?List of fields name and football type name to display in match filter
+class FieldFootbalTypeModelSerializer(serializers.ModelSerializer):
+    football_type = serializers.CharField()
+    class Meta:
+        model = Field
+        fields = ['name','football_type']
+
+    # ?Match internal view and actions
+
+class PlayerRetriveModelSerializer(serializers.ModelSerializer):
+    player_id = serializers.CharField(source='id')
+    user_data = UserModelSerializer(source='user', read_only=True)
+    position = serializers.CharField()
+    class Meta:
+        model = Player  
+        fields = ['player_id','gender','position','user_data']
+
+class TeamPlayerModelSerializer(serializers.ModelSerializer):
+    players = PlayerRetriveModelSerializer(many=True)
+    class Meta:
+        model = Team
+        fields = ['id','name','players']
+
+class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
+    team = TeamPlayerModelSerializer(many=True)
+    field = FieldRetriveModelSerializer()
+    class Meta:
+        model = Match
+        fields = ['id','field','date','time','category','team']
+
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user.id
+        if not user:
+            raise serializers.ValidationError("Para acceder a esta opcion debes iniciar sesion")
+            
+        player = Player.objects.get(user=self.context['request'].user.id)
+        name = validated_data['team'][0].get('name')
+        team = Team.objects.get(name=name)
+
+        if player in team.players.all():
+            team.players.remove(player)
+        else:
+            team.players.add(player)
+            team.save()
+
+        return instance
+
+

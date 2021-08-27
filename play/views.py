@@ -1,11 +1,11 @@
 
+from django.db.models import query
 from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-import datetime as dt
 
 #!Models
 from .models import (
@@ -27,6 +27,9 @@ from .serializers import (
     # !match
     MatchListModelSerializer,
     MatchCreationModelSerializer,
+    FieldFootbalTypeModelSerializer,
+    MatchTeamPlayerModelSerializer,
+
 
     # !Field
     FieldListModelSerializer,
@@ -60,7 +63,9 @@ class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = UserPartialUpdateModelSerializer
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    
+    
 
 class PlayerPositionListAPIView(generics.ListAPIView):
     queryset = Position.objects.all()
@@ -103,6 +108,11 @@ class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchCreationModelSerializer
 
+class MatchPlayerRetriveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    # queryset = Match.objects.all()
+    queryset = Match.objects.all()
+    serializer_class = MatchTeamPlayerModelSerializer
+
 # !Field 
 class FieldListAPIView(generics.ListAPIView):
     queryset = Field.objects.all()
@@ -111,3 +121,7 @@ class FieldListAPIView(generics.ListAPIView):
 class FieldRetriveAPIView(generics.RetrieveAPIView):
     queryset = Field.objects.all()
     serializer_class = FieldRetriveModelSerializer
+
+class FieldFootballTypeListAPIView(generics.ListAPIView):
+    queryset = Field.objects.all()
+    serializer_class = FieldFootbalTypeModelSerializer

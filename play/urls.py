@@ -13,6 +13,8 @@ from .views import (
     # !Match
     MatchListAPIView,
     MatchCreationAPIView,
+    FieldFootballTypeListAPIView,
+    MatchPlayerRetriveUpdateAPIView,
 
     # !Field
     FieldListAPIView,
@@ -25,13 +27,15 @@ urlpatterns = [
     path('signup/', UserCreateAPIView.as_view(), name='signup'),
 
     # !Player
-    path('players/<int:pk>', UserRetriveAPIView.as_view(), name='player' ),
-    path('players/update/<int:pk>', UserPartialUpdateAPIView.as_view(), name='player_update'),
+    path('players/<int:pk>/', UserRetriveAPIView.as_view(), name='player' ),
+    path('players/update/<int:pk>/', UserPartialUpdateAPIView.as_view(), name='player_update'),
     path('players/position/', PlayerPositionListAPIView.as_view(), name='player_list_position'),
 
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
-   path('matches/create/',MatchCreationAPIView.as_view(), name='match_create'),
+   path('matches/create/', MatchCreationAPIView.as_view(), name='match_create'),
+   path('fieldfootbaltype/', FieldFootballTypeListAPIView.as_view(), name='fieldfootballtype'),
+   path('matches/<int:pk>/',MatchPlayerRetriveUpdateAPIView.as_view(), name='match_retrive'),
 
    # !Field
    path('fields/', FieldListAPIView.as_view(), name='field_list'),
