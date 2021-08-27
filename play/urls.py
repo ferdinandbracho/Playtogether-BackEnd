@@ -13,7 +13,6 @@ from .views import (
     # !Match
     MatchListAPIView,
     MatchCreationAPIView,
-    FieldFootballTypeListAPIView,
     MatchPlayerRetriveUpdateAPIView,
 
     # !Field
@@ -34,7 +33,6 @@ urlpatterns = [
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
    path('matches/create/', MatchCreationAPIView.as_view(), name='match_create'),
-   path('fieldfootbaltype/', FieldFootballTypeListAPIView.as_view(), name='fieldfootballtype'),
    path('matches/<int:pk>/',MatchPlayerRetriveUpdateAPIView.as_view(), name='match_retrive'),
 
    # !Field

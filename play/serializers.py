@@ -202,15 +202,7 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
         match.team.add(team_a, team_b)
         return match    
 
-    # ?List of fields name and football type name to display in match filter
-class FieldFootbalTypeModelSerializer(serializers.ModelSerializer):
-    football_type = serializers.CharField()
-    class Meta:
-        model = Field
-        fields = ['name','football_type']
-
     # ?Match internal view and actions
-
 class PlayerRetriveModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
     user_data = UserModelSerializer(source='user', read_only=True)
