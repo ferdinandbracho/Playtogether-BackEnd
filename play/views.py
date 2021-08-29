@@ -48,17 +48,10 @@ class IdRetriveAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
-        qs = Match.objects.all()
-        for match in qs:
-            match.datetime_checker()
-
         return Response({
             'token': token.key,
             'user_id': user.pk
         })
-
-    # def get_queryset(self):
-    #     return super().get_queryset()
 
 class UserRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -83,6 +76,11 @@ class MatchListAPIView(generics.ListAPIView):
     serializer_class = MatchListModelSerializer
 
     def get_queryset(self):
+        now = dt.datetime.today()
+        qs = Match.objects.all()
+        for match in qs:
+            match.datetime_checker()
+        
         filters = {}
 
         category = self.request.GET.getlist('category')
@@ -102,10 +100,7 @@ class MatchListAPIView(generics.ListAPIView):
         if start_date:
             filters['date__range'] = (start_date, end_date)
 
-        now = dt.datetime.today()
         filters['active'] = True
-        # filters['time__gte'] = now
-        # filters['date__gte'] = now
         return self.queryset.filter(**filters).order_by('date', 'time')
 
 class MatchCreationAPIView(generics.CreateAPIView):
