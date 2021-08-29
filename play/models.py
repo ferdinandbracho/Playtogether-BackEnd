@@ -103,18 +103,17 @@ class Match(models.Model):
 
     def datetime_checker(self):
         now = dt.datetime.today()
-        qs = Match.objects.all()
-        for match in qs:
-            if (
-                    match not in qs.filter(date__gte=now.date()) or 
-                    match.date == now.date() and 
-                    match.time < now.time()
-                ):
-                match.active = False
-                match.save()
-            else:            
-                match.active = True
-                match.save()
+
+        if (
+                # self not in qs.filter(date__gte=now.date()) or 
+                self.date == now.date() and 
+                self.time < now.time()
+            ):
+            self.active = False
+            self.save()
+        else:            
+            self.active = True
+            self.save()
         return self
 
     
