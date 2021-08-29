@@ -203,9 +203,15 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
         return match    
 
     # ?Match internal view and actions
+class UserPlayerModelSerializer(serializers.ModelSerializer):
+    user_id = serializers.CharField(source='id')
+    class Meta:
+        model = User 
+        fields = ['user_id','username','first_name','last_name','email']
+
 class PlayerRetriveModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
-    user_data = UserModelSerializer(source='user', read_only=True)
+    user_data = UserPlayerModelSerializer(source='user', read_only=True)
     position = serializers.CharField()
     class Meta:
         model = Player  
@@ -222,7 +228,7 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
     field = FieldRetriveModelSerializer()
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category','team']
+        fields = ['id','field','date','time','category','team','active']
 
 
     def update(self, instance, validated_data):
