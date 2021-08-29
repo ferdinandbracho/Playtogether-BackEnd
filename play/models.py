@@ -5,10 +5,10 @@ from django_countries.fields import CountryField
 import datetime as dt
 from django.core.exceptions import ValidationError
 
-def media_path(instance, filename):
+def media_path(instance):
     return 'user_{0}/avatar'.format(instance.user.id)
 
-def media_path_field(instance, filename):
+def media_path_field(instance):
     return 'field_{0}/img'.format(instance.id)
 
 def validate_media_size(value):
