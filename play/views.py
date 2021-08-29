@@ -101,8 +101,6 @@ class MatchListAPIView(generics.ListAPIView):
             filters['date__range'] = (start_date, end_date)
 
         filters['active'] = True
-        # filters['time__gte'] = now
-        # filters['date__gte'] = now
         return self.queryset.filter(**filters).order_by('date', 'time')
 
 class MatchCreationAPIView(generics.CreateAPIView):
