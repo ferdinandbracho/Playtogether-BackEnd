@@ -217,7 +217,7 @@ class PlayerRetriveModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
     user_data = UserPlayerModelSerializer(source='user', read_only=True)
     position = serializers.CharField()
-    photo = serializers.ImageField(use_url=True)
+    photo = serializers.ImageField(use_url=True, read_only=True)
     class Meta:
         model = Player  
         fields = ['player_id','gender','position','photo','user_data']
@@ -237,9 +237,9 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        user = self.context['request'].user.id
-        if not user:
-            raise serializers.ValidationError("Para acceder a esta opcion debes iniciar sesion")
+
+        if instance.active == False:
+            raise serializers.ValidationError('Este partido no esta activo, intenta otro partido')
 
         player = Player.objects.get(user=self.context['request'].user.id)
         name = validated_data['team'][0].get('name')
