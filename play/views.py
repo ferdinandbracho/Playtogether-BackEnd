@@ -47,10 +47,12 @@ class IdRetriveAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
+        player_photo = Player.objects.get(user=user.pk)
 
         return Response({
             'token': token.key,
-            'user_id': user.pk
+            'user_id': user.pk,
+            'player_photo' : str(player_photo.photo),
         })
 
 class UserRetriveAPIView(generics.RetrieveAPIView):

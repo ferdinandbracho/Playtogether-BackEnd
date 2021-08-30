@@ -25,6 +25,7 @@ from django.contrib.auth.models import User
 # !User - Player
     # ?User Creation
 class UserModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField()
     class Meta:
         model = User
         fields = [
@@ -32,13 +33,15 @@ class UserModelSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
-            'password',
+            'password'
         ]
         extra_kwargs = {'password':{'write_only' : True}}
 
     def create(self, validate_data):
         user = User.objects.create_user(**validate_data)
-        Player.objects.create(user=user)
+        player = Player.objects.create(user=user)
+
+        player.save()
         return user
 
     # ?User_Player Profile 
@@ -48,6 +51,7 @@ class PlayerModelSerializer(serializers.ModelSerializer):
     matches = serializers.SerializerMethodField()
     fields_count = serializers.SerializerMethodField()
     matches_count = serializers.SerializerMethodField()
+    photo = serializers.ImageField(use_url=True)
 
     def get_matches(self, obj):
         qs = Match.objects.filter(team__players=obj).order_by('date')
@@ -62,7 +66,7 @@ class PlayerModelSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Player
-        fields= ['player_id','dominant_food','position','matches','matches_count','fields_count'] 
+        fields= ['player_id','dominant_food','position','photo','matches','matches_count','fields_count'] 
 
 class UserListModelSerializer(serializers.ModelSerializer):
     players = PlayerModelSerializer()
@@ -213,9 +217,10 @@ class PlayerRetriveModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
     user_data = UserPlayerModelSerializer(source='user', read_only=True)
     position = serializers.CharField()
+    photo = serializers.ImageField(use_url=True)
     class Meta:
         model = Player  
-        fields = ['player_id','gender','position','user_data']
+        fields = ['player_id','gender','position','photo','user_data']
 
 class TeamPlayerModelSerializer(serializers.ModelSerializer):
     players = PlayerRetriveModelSerializer(many=True)
