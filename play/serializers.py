@@ -25,7 +25,6 @@ from django.contrib.auth.models import User
 # !User - Player
     # ?User Creation
 class UserModelSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField()
     class Meta:
         model = User
         fields = [
@@ -40,7 +39,6 @@ class UserModelSerializer(serializers.ModelSerializer):
     def create(self, validate_data):
         user = User.objects.create_user(**validate_data)
         player = Player.objects.create(user=user)
-
         player.save()
         return user
 
