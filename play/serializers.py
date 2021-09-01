@@ -166,9 +166,16 @@ class MatchListModelSerializer(serializers.ModelSerializer):
     field = FieldSelectedListModelSerializer()
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
     time = serializers.TimeField(required=True, input_formats=['%H:%M'])
+    places_available= serializers.SerializerMethodField()
+
+    def get_places_available(self, obj):
+        registered =  Match.objects.filter(id=obj.id).aggregate(registered=Count('team__players'))['registered']
+        max_player = obj.field.football_type.max_players
+        return max_player - registered
+
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category']
+        fields = ['id','field','date','time','category','places_available' ]
 
 class MatchCreationModelSerializer(serializers.ModelSerializer):
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
