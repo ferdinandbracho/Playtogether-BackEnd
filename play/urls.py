@@ -9,6 +9,7 @@ from .views import (
     UserPartialUpdateAPIView,
     IdRetriveAuthToken,
     PlayerPositionListAPIView,
+    UserOrganizedMatchesAPIView,
 
     # !Match
     MatchListAPIView,
@@ -29,6 +30,7 @@ urlpatterns = [
     path('players/<int:pk>/', UserRetriveAPIView.as_view(), name='player' ),
     path('players/update/<int:pk>/', UserPartialUpdateAPIView.as_view(), name='player_update'),
     path('players/position/', PlayerPositionListAPIView.as_view(), name='player_list_position'),
+    path('players/organized/',UserOrganizedMatchesAPIView.as_view(), name='player_organized_list'),
 
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
