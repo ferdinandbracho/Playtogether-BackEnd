@@ -73,6 +73,7 @@ class PlayerPositionListAPIView(generics.ListAPIView):
     serializer_class = PlayerPositionModelSerializer
 
 # !Match
+from django.db.models import Count
 class MatchListAPIView(generics.ListAPIView):
     queryset =  Match.objects.all()
     serializer_class = MatchListModelSerializer
@@ -103,6 +104,12 @@ class MatchListAPIView(generics.ListAPIView):
 
         filters['active'] = True
         return self.queryset.filter(**filters).order_by('date', 'time')
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        response.data.insert(0,{'total_matches': len(response.data)})
+        return response
+    
 
 class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
