@@ -1,11 +1,8 @@
 
-from re import S
-from django.db.models.fields import CharField
 from rest_framework import serializers
 from django.db.models.aggregates import Count
 import datetime as dt
 from .models import validate_media_size
-from rest_framework.response import Response
 
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
@@ -66,12 +63,19 @@ class PlayerModelSerializer(serializers.ModelSerializer):
         model = Player
         fields= ['player_id','dominant_food','position','photo','matches','matches_count','fields_count'] 
 
-class UserListModelSerializer(serializers.ModelSerializer):
+class UserRetriveModelSerializer(serializers.ModelSerializer):
     players = PlayerModelSerializer()
 
     class Meta:
         model = User
         fields = ['username','first_name', 'last_name','date_joined','players']
+
+class UserOrganizedMatchesModelSerializer(serializers.ModelSerializer):
+    field = serializers.CharField()
+
+    class Meta:
+        model = Match
+        fields = ['id','field','date','time','category','active','date_created']
 
     # ?User_Profile Update
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
@@ -201,6 +205,8 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
                 match.time <= validated_data['time'] <= final
                 ):
                 raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
+
+        validated_data['organizer'] = self.context['request'].user
 
         match = Match.objects.create(**validated_data)
         match.save()

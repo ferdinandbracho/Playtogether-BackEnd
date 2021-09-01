@@ -97,6 +97,7 @@ class Match(models.Model):
     category = models.CharField(max_length=30, choices=CATEGORY)
     active = models.BooleanField(default=True)
     team = models.ManyToManyField(to='Team',related_name='matches')
+    organizer = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='matches')
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

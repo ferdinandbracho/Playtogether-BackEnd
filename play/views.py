@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-import datetime as dt
 
 #!Models
 from .models import (
@@ -20,9 +19,10 @@ from django.contrib.auth.models import User
 from .serializers import (
     # !User - Player
     UserModelSerializer,
-    UserListModelSerializer,
+    UserRetriveModelSerializer,
     UserPartialUpdateModelSerializer,
     PlayerPositionModelSerializer,
+    UserOrganizedMatchesModelSerializer,
 
     # !match
     MatchListModelSerializer,
@@ -57,9 +57,8 @@ class IdRetriveAuthToken(ObtainAuthToken):
 
 class UserRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserListModelSerializer
-    # permission_classes = [IsAuthenticated]
-
+    serializer_class = UserRetriveModelSerializer
+    permission_classes = [IsAuthenticated]
 
 class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
@@ -67,13 +66,24 @@ class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
     permission_classes = [IsAuthenticated]
+
+class UserOrganizedMatchesAPIView(generics.ListAPIView):
+    queryset = Match.objects.all()
+    serializer_class = UserOrganizedMatchesModelSerializer
+
+    def get_queryset(self):
+        return Match.objects.filter(organizer=self.request.user.id)
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        response.data.insert(0,{'total_matches_organized': len(response.data)})
+        return response
     
 class PlayerPositionListAPIView(generics.ListAPIView):
     queryset = Position.objects.all()
     serializer_class = PlayerPositionModelSerializer
 
 # !Match
-from django.db.models import Count
 class MatchListAPIView(generics.ListAPIView):
     queryset =  Match.objects.all()
     serializer_class = MatchListModelSerializer
@@ -114,12 +124,13 @@ class MatchListAPIView(generics.ListAPIView):
 class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchCreationModelSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class MatchPlayerRetriveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchTeamPlayerModelSerializer
     http_method_names=['get','patch'] 
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
 
