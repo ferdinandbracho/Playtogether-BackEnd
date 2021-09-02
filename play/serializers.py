@@ -136,7 +136,6 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
         model = Position
         fields = '__all__'
 
-
 # !Field
 class FootballTypeRetriveModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -189,7 +188,6 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
         fields = ['id','field','date','time','category']
-
 
     def create(self, validated_data):
         duration = FootballType.objects.get(fields=validated_data['field']).duration
@@ -246,7 +244,6 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
         model = Match
         fields = ['id','field','date','time','category','team','active']
 
-
     def update(self, instance, validated_data):
 
         if instance.active == False:
@@ -261,5 +258,4 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
         else:
             team.players.add(player)
             team.save()
-
         return instance
