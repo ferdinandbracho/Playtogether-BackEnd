@@ -29,7 +29,6 @@ from .serializers import (
     MatchCreationModelSerializer,
     MatchTeamPlayerModelSerializer,
 
-
     # !Field
     FieldListModelSerializer,
     FieldRetriveModelSerializer,
@@ -94,7 +93,6 @@ class MatchListAPIView(generics.ListAPIView):
             match.datetime_checker()
         
         filters = {}
-
         category = self.request.GET.getlist('category')
         if category:
             filters['category__in'] = category
@@ -120,7 +118,6 @@ class MatchListAPIView(generics.ListAPIView):
         response.data.insert(0,{'total_matches': len(response.data)})
         return response
     
-
 class MatchCreationAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchCreationModelSerializer
@@ -130,14 +127,12 @@ class MatchPlayerRetriveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchTeamPlayerModelSerializer
     http_method_names=['get','patch'] 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-
         match = Match.objects.get(id=self.kwargs.get('pk'))
         match.datetime_checker()
         return super().get_queryset()
-
 
 # !Field 
 class FieldListAPIView(generics.ListAPIView):

@@ -11,7 +11,6 @@ def media_path(instance, filename):
 def media_path_field(instance, filename):
     return 'field_{0}/img'.format(instance.id)  
 
-
 def validate_media_size(value):
     media_size = value.size
     if media_size > 2097125:
@@ -44,7 +43,6 @@ class Player(models.Model):
 
     def __str__(self):
         return self.user.first_name
-    
 
 # !Field
 class AddressField(models.Model):
@@ -118,7 +116,6 @@ class Match(models.Model):
             self.active = True
             self.save()
         return self
-
     
 class Team(models.Model):
     name = models.CharField(max_length=50)
