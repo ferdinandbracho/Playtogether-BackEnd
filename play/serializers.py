@@ -70,12 +70,6 @@ class UserRetriveModelSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username','first_name', 'last_name','date_joined','players']
 
-class UserOrganizedMatchesModelSerializer(serializers.ModelSerializer):
-    field = serializers.CharField()
-
-    class Meta:
-        model = Match
-        fields = ['id','field','date','time','category','active','date_created']
 
     # ?User_Profile Update
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
@@ -221,6 +215,14 @@ class UserPlayerModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User 
         fields = ['user_id','username','first_name','last_name','email']
+
+    # ?Match Organized - Player
+class UserOrganizedMatchesModelSerializer(serializers.ModelSerializer):
+    field = FieldSelectedListModelSerializer()
+
+    class Meta:
+        model = Match
+        fields = ['id','field','date','time','category','active','date_created']
 
 class PlayerRetriveModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
