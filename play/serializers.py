@@ -185,17 +185,14 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         duration = FootballType.objects.get(fields=validated_data['field']).duration
-        final = (
-            (dt.datetime.combine(dt.date(1,1,1),validated_data['time']) + 
-            dt.timedelta(minutes=duration)).time()
-        )
-
-        qs = Match.objects.all()
+        
+        qs = Match.objects.filter(field=validated_data['field']).filter(date=validated_data['date'])
         for match in qs:
-            if (
-                match.date == validated_data['date'] and match.field == validated_data['field'] and 
-                match.time <= validated_data['time'] <= final
-                ):
+            final = (
+                (dt.datetime.combine(dt.date(1,1,1),match.time) + 
+                dt.timedelta(minutes=duration)).time()
+            )
+            if match.time <= validated_data['time'] <= final:
                 raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
 
         validated_data['organizer'] = self.context['request'].user
