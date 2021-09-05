@@ -73,13 +73,12 @@ class UserRetriveModelSerializer(serializers.ModelSerializer):
 
     # ?User_Profile Update
 class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
-    nationality = CountryField(name_only=True)
     photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
     gender = serializers.ChoiceField(choices=Player.GENDER)
 
     class Meta:
         model = Player
-        fields = ['gender','nationality','position','photo']
+        fields = ['gender','position','photo']
 
 class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
@@ -118,7 +117,6 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         instance.save()
 
         player.gender = player_validated.get('gender',player.gender)
-        player.nationality = player_validated.get('nationality',player.nationality)
         player.position = player_validated.get('position',player.position)
         player.photo = player_validated.get('photo',player.photo)
         player.save()
