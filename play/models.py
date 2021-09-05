@@ -32,7 +32,8 @@ class Player(models.Model):
         ('masculino', 'Masculino')
     )
     gender = models.CharField(max_length=50, choices=GENDER, default='Masculino', blank=True) 
-    nationality = CountryField()
+    nationality = CountryField(blank=True, null=True)
+    position = models.ForeignKey(to=Position,on_delete=CASCADE, related_name='players', blank=True, null=True)
     position = models.ForeignKey(to=Position,on_delete=CASCADE, related_name='players', blank=True, null=True)
     FOOT = (
         ('derecho', 'Derecho'),
