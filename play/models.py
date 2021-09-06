@@ -106,7 +106,6 @@ class Match(models.Model):
         now = dt.datetime.today()
 
         if (
-                # self not in self.filter(date__gte=now.date()) or 
                 self.date < now.date() or
                 self.date == now.date() and 
                 self.time < now.time()
