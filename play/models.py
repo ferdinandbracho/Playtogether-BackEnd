@@ -13,8 +13,8 @@ def media_path_field(instance, filename):
 
 def validate_media_size(value):
     media_size = value.size
-    if media_size > 2097125:
-        raise ValidationError('El tamano maximo de la imagen a cargar es de 2MB')
+    if media_size > 1048562:
+        raise ValidationError('El tamano maximo de la imagen a cargar es de 1MB')
     else:
         return value
 

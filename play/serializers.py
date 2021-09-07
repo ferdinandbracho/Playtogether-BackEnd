@@ -244,11 +244,18 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
 
         if instance.active == False:
-            raise serializers.ValidationError('Este partido no esta activo, intenta otro partido')
+                raise serializers.ValidationError('Este partido no esta activo, intenta otro')
 
         player = Player.objects.get(user=self.context['request'].user.id)
         name = validated_data['team'][0].get('name')
         team = Team.objects.get(name=name)
+
+        if instance.category != 'mixto':
+            if (
+                instance.category == 'varonil' and player.gender != 'masculino' or 
+                instance.category == 'femenil' and player.gender != 'femenino'
+            ):
+                raise serializers.ValidationError('No puedes unirte a esta categoria, intenta otro partido')
 
         if player in team.players.all():
             team.players.remove(player)
