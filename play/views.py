@@ -71,7 +71,7 @@ class UserOrganizedMatchesAPIView(generics.ListAPIView):
     serializer_class = UserOrganizedMatchesModelSerializer
 
     def get_queryset(self):
-        return Match.objects.filter(organizer=self.request.user.id)
+        return Match.objects.filter(organizer=self.kwargs['pk'])
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
