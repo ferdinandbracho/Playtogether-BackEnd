@@ -54,7 +54,7 @@ class AddressField(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f'{self.town} {self.street} {self.street_number}'
+        return f'{self.street_number} {self.street} {self.town}'
 
 class FootballType(models.Model):
     name = models.CharField(max_length=50)
