@@ -239,7 +239,7 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
     field = FieldRetriveModelSerializer()
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category','team','active']
+        fields = ['id','date','time','category','organizer','field','team','active']
 
     def update(self, instance, validated_data):
 
