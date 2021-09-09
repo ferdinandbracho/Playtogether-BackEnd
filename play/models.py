@@ -31,7 +31,7 @@ class Player(models.Model):
         ('femenino','Femenino'),
         ('masculino', 'Masculino')
     )
-    gender = models.CharField(max_length=50, choices=GENDER, default='Masculino', blank=True) 
+    gender = models.CharField(max_length=50, choices=GENDER, blank=True) 
     nationality = CountryField(blank=True, null=True)
     position = models.ForeignKey(to=Position,on_delete=CASCADE, related_name='players', blank=True, null=True)
     position = models.ForeignKey(to=Position,on_delete=CASCADE, related_name='players', blank=True, null=True)
@@ -39,11 +39,17 @@ class Player(models.Model):
         ('derecho', 'Derecho'),
         ('izquierdo', 'Izquierdo')
     )
-    dominant_food = models.CharField(max_length=50, choices=FOOT, default='Derecho', blank=True)
+    dominant_food = models.CharField(max_length=50, choices=FOOT, blank=True)
     photo = models.ImageField(blank=True, upload_to=media_path,default='avatar_default.png', validators=[validate_media_size])
 
     def __str__(self):
         return self.user.first_name
+
+# !Administrator 
+class Administrator(models.Model):
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='administrators')
+    field = models.OneToOneField(to='Field', on_delete=models.CASCADE, related_name='administrators')
+    photo = models.ImageField(blank=True, upload_to=media_path,default='admin_default.png', validators=[validate_media_size])
 
 # !Field
 class AddressField(models.Model):
@@ -72,12 +78,13 @@ class Service(models.Model):
         return self.service
 
 class Field(models.Model):
-    name = models.CharField(max_length=50)
-    rent_cost = models.FloatField()
-    address = models.OneToOneField(to=AddressField, on_delete=CASCADE, related_name='fields')
-    football_type = models.ForeignKey(to=FootballType, on_delete=models.CASCADE, related_name='fields')
+    name = models.CharField(max_length=50,blank=True)
+    rent_cost = models.FloatField(blank=True, null=True)
+    address = models.OneToOneField(to=AddressField, on_delete=CASCADE, blank=True, null=True,related_name='fields')
+    football_type = models.ForeignKey(to=FootballType, on_delete=models.CASCADE, blank=True, null=True, related_name='fields')
     photo = models.ImageField(blank=True, upload_to=media_path_field, default='field_default.jpg')
-    fields_services = models.ManyToManyField(to=Service, related_name='fields')
+    fields_services = models.ManyToManyField(to=Service, blank=True, null=True, related_name='fields')
+    show = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -96,7 +103,8 @@ class Match(models.Model):
     category = models.CharField(max_length=30, choices=CATEGORY)
     active = models.BooleanField(default=True)
     team = models.ManyToManyField(to='Team',related_name='matches')
-    organizer = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='matches')
+    organizer = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='matches',blank=True)
+    accepted = models.BooleanField(default=False, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

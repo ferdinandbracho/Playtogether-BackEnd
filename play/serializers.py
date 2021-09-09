@@ -12,6 +12,7 @@ from .models import (
     Field,
     FootballType,
     Player,
+    Administrator,
     Match,
     Position,
     Service,
@@ -19,26 +20,33 @@ from .models import (
 )
 from django.contrib.auth.models import User
 
-# !User - Player
+# !User - Player - FieldAdmin
     # ?User Creation
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'password'
-        ]
+        fields = ['username','first_name','last_name','email','password']
         extra_kwargs = {'password':{'write_only' : True}}
 
-    def create(self, validate_data):
-        user = User.objects.create_user(**validate_data)
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
         player = Player.objects.create(user=user)
         player.save()
         return user
 
+    # ?FieldAdmin 
+class FieldAdminCreateModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username','first_name', 'email', 'password']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data, is_staff=True)
+        field = Field.objects.create()
+        administrator = Administrator.objects.create(user=user, field=field)
+        administrator.save()
+        return user
+        
     # ?User_Player Profile 
 class PlayerModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')

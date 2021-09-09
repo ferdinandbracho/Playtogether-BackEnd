@@ -3,13 +3,14 @@ from django.urls import path
 
 # Views 
 from .views import (
-    # !User - Player
-    UserCreateAPIView,
+    # !User - Player - FieldAdmin
+    UserPlayerCreateAPIView,
     UserRetriveAPIView,
     UserPartialUpdateAPIView,
     IdRetriveAuthToken,
     PlayerPositionListAPIView,
     UserOrganizedMatchesAPIView,
+    UserFielAdminCreateAPIView,
 
     # !Match
     MatchListAPIView,
@@ -24,7 +25,8 @@ from .views import (
 urlpatterns = [
     # !User
     path('login/', IdRetriveAuthToken.as_view(), name='login'),
-    path('signup/', UserCreateAPIView.as_view(), name='signup'),
+    path('signup_player/', UserPlayerCreateAPIView.as_view(), name='signup_player'),
+    path('signup_fieldadmin/', UserFielAdminCreateAPIView.as_view(), name='signup_fieldadmin'),
 
     # !Player
     path('players/<int:pk>/', UserRetriveAPIView.as_view(), name='player' ),

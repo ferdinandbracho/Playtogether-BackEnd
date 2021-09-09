@@ -1,4 +1,5 @@
 
+from django.db.models import query
 from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -11,18 +12,20 @@ from .models import (
     Field,
     Match,
     Player,
+    Administrator,
     Position,
 ) 
 from django.contrib.auth.models import User
 
 # !Serializers 
 from .serializers import (
-    # !User - Player
+    # !User - Player - FieldlAdmin
     UserModelSerializer,
     UserRetriveModelSerializer,
     UserPartialUpdateModelSerializer,
     PlayerPositionModelSerializer,
     UserOrganizedMatchesModelSerializer,
+    FieldAdminCreateModelSerializer,
 
     # !match
     MatchListModelSerializer,
@@ -34,10 +37,14 @@ from .serializers import (
     FieldRetriveModelSerializer,
 )
 
-# !User - Player 
-class UserCreateAPIView(generics.CreateAPIView):
+# !User - Player - FieldAdmin
+class UserPlayerCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
+
+class UserFielAdminCreateAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = FieldAdminCreateModelSerializer
 
 class IdRetriveAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -46,12 +53,16 @@ class IdRetriveAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        player_photo = Player.objects.get(user=user.pk)
+        model = Player
+        if user.is_staff:
+            model = Administrator
+        instance_photo = model.objects.get(user=user.pk)
 
         return Response({
             'token': token.key,
             'user_id': user.pk,
-            'player_photo' : str(player_photo.photo),
+            'player_photo' : str(instance_photo.photo),
+            'field_admin' : user.is_staff,
         })
 
 class UserRetriveAPIView(generics.RetrieveAPIView):
