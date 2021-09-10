@@ -279,19 +279,36 @@ class FieldFieldAdminRetriveModelSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(use_url=True)
     services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
     match_history = serializers.SerializerMethodField(source='get_matches')
+    total_match_history = serializers.SerializerMethodField()
     pending_matches = serializers.SerializerMethodField()
 
+    def get_total_match_history(self, obj):
+        user = self.context['request'].user
+        return Match.objects.filter(field__administrators__user= user).filter(accepted=True).count()
+
     def get_match_history(self, obj):
-        qs = Match.objects.filter(field__administrators__user= self.context['request'].user).filter(accepted=True)
+        user = self.context['request'].user
+        qs = Match.objects.filter(field__administrators__user= user).filter(accepted=True)
         return MatchListModelSerializer(qs, many=True).data
 
     def get_pending_matches(self, obj):
-        qs = Match.objects.filter(field__administrators__user= self.context['request'].user).filter(accepted=False)
+        user = self.context['request'].user
+        qs = Match.objects.filter(field__administrators__user= user).filter(accepted=False)
         return MatchListModelSerializer(qs, many=True).data
 
     class Meta:
         model = Field 
-        fields = ['name','rent_cost','address','football_type','photo','services', 'match_history','pending_matches']
+        fields = [
+                    'name',
+                    'rent_cost',
+                    'address',
+                    'football_type',
+                    'photo',
+                    'services',
+                    'show',
+                    'total_match_history',
+                    'match_history',
+                    'pending_matches']
 
 class FieldAdminRetriveModelSerializer(serializers.ModelSerializer):
     field = FieldFieldAdminRetriveModelSerializer()
