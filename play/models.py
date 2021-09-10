@@ -50,6 +50,11 @@ class Administrator(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='administrators')
     field = models.OneToOneField(to='Field', on_delete=models.CASCADE, related_name='administrators')
     photo = models.ImageField(blank=True, upload_to=media_path,default='admin_default.png', validators=[validate_media_size])
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.first_name
+    
 
 # !Field
 class AddressField(models.Model):
@@ -83,7 +88,7 @@ class Field(models.Model):
     address = models.OneToOneField(to=AddressField, on_delete=CASCADE, blank=True, null=True,related_name='fields')
     football_type = models.ForeignKey(to=FootballType, on_delete=models.CASCADE, blank=True, null=True, related_name='fields')
     photo = models.ImageField(blank=True, upload_to=media_path_field, default='field_default.jpg')
-    fields_services = models.ManyToManyField(to=Service, blank=True, null=True, related_name='fields')
+    fields_services = models.ManyToManyField(to=Service, blank=True, related_name='fields')
     show = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
@@ -103,7 +108,7 @@ class Match(models.Model):
     category = models.CharField(max_length=30, choices=CATEGORY)
     active = models.BooleanField(default=True)
     team = models.ManyToManyField(to='Team',related_name='matches')
-    organizer = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='matches',blank=True)
+    organizer = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='matches',blank=True, null=True)
     accepted = models.BooleanField(default=False, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 

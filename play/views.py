@@ -10,6 +10,7 @@ from rest_framework.response import Response
 #!Models
 from .models import (
     Field,
+    FootballType,
     Match,
     Player,
     Administrator,
@@ -21,11 +22,12 @@ from django.contrib.auth.models import User
 from .serializers import (
     # !User - Player - FieldlAdmin
     UserModelSerializer,
-    UserRetriveModelSerializer,
-    UserPartialUpdateModelSerializer,
+    UserPlayerRetriveModelSerializer,
+    UserPlayerPartialUpdateModelSerializer,
     PlayerPositionModelSerializer,
     UserOrganizedMatchesModelSerializer,
     FieldAdminCreateModelSerializer,
+    UserFieldAdminRetriveModelSerializer,
 
     # !match
     MatchListModelSerializer,
@@ -35,17 +37,10 @@ from .serializers import (
     # !Field
     FieldListModelSerializer,
     FieldRetriveModelSerializer,
+    FootballTypeRetriveModelSerializer,
 )
 
 # !User - Player - FieldAdmin
-class UserPlayerCreateAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserModelSerializer
-
-class UserFielAdminCreateAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = FieldAdminCreateModelSerializer
-
 class IdRetriveAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
@@ -65,14 +60,19 @@ class IdRetriveAuthToken(ObtainAuthToken):
             'field_admin' : user.is_staff,
         })
 
+    # ?User Player 
+class UserPlayerCreateAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserModelSerializer
+
 class UserRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserRetriveModelSerializer
+    serializer_class = UserPlayerRetriveModelSerializer
     permission_classes = [IsAuthenticated]
 
-class UserPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
+class UserPlayerPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserPartialUpdateModelSerializer
+    serializer_class = UserPlayerPartialUpdateModelSerializer
     http_method_names=['get','patch','put']
     parser_classes = [FormParser, MultiPartParser]
     permission_classes = [IsAuthenticated]
@@ -92,6 +92,19 @@ class UserOrganizedMatchesAPIView(generics.ListAPIView):
 class PlayerPositionListAPIView(generics.ListAPIView):
     queryset = Position.objects.all()
     serializer_class = PlayerPositionModelSerializer
+
+    # ?FieldAdmin
+class UserFielAdminCreateAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = FieldAdminCreateModelSerializer
+
+class UserFieldAdminRetriveAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserFieldAdminRetriveModelSerializer
+    permission_classes = [IsAuthenticated]
+
+class UserFieldAdminFieldPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
+    pass
 
 # !Match
 class MatchListAPIView(generics.ListAPIView):
@@ -153,4 +166,9 @@ class FieldListAPIView(generics.ListAPIView):
 class FieldRetriveAPIView(generics.RetrieveAPIView):
     queryset = Field.objects.all()
     serializer_class = FieldRetriveModelSerializer
+
+class FootballTypeListAPIView(generics.ListAPIView):
+    queryset = FootballType.objects.all()
+    serializer_class = FootballTypeRetriveModelSerializer
+
 
