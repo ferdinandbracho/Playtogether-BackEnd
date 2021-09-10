@@ -1,5 +1,4 @@
 
-from django.db.models import query
 from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -68,7 +67,10 @@ class UserPlayerCreateAPIView(generics.CreateAPIView):
 class UserRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserPlayerRetriveModelSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)
 
 class UserPlayerPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
