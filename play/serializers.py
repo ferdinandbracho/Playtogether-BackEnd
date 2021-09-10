@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from django.db.models.aggregates import Count
 import datetime as dt
-from .models import validate_media_size
+from .models import AddressField, validate_media_size
 
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
@@ -71,16 +71,15 @@ class PlayerModelSerializer(serializers.ModelSerializer):
         model = Player
         fields= ['player_id','dominant_food','position','photo','matches','matches_count','fields_count'] 
 
-class UserRetriveModelSerializer(serializers.ModelSerializer):
+class UserPlayerRetriveModelSerializer(serializers.ModelSerializer):
     players = PlayerModelSerializer()
 
     class Meta:
         model = User
         fields = ['username','first_name', 'last_name','date_joined','players']
 
-
-    # ?User_Profile Update
-class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
+    # ?User-Player Profile Update
+class PlayerDataPartialUpdateModelSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
     gender = serializers.ChoiceField(choices=Player.GENDER)
 
@@ -88,7 +87,7 @@ class PlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
         model = Player
         fields = ['gender','position','photo']
 
-class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
+class UserDataPartialUpdateModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     email = serializers.EmailField(read_only=True)
 
@@ -96,16 +95,15 @@ class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username','first_name','last_name', 'email']
 
-class UserPartialUpdateModelSerializer(serializers.ModelSerializer):
-    user_data = UserPartialUpdateModelSerializer(source='*')
-    player_data = PlayerPartialUpdateModelSerializer(source='players')
+class UserPlayerPartialUpdateModelSerializer(serializers.ModelSerializer):
+    user_data = UserDataPartialUpdateModelSerializer(source='*')
+    player_data = PlayerDataPartialUpdateModelSerializer(source='players')
 
     class Meta:
         model = User
         fields = ['user_data','player_data']
 
     def update(self, instance, validated_data):
-        validated_data
         user = self.context['request'].user.id
         if user != instance.id:
             raise serializers.ValidationError({"Fail":"Not your profile"})
@@ -135,6 +133,7 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
         fields = '__all__'
+
 
 # !Field
 class FootballTypeRetriveModelSerializer(serializers.ModelSerializer):
@@ -178,7 +177,7 @@ class MatchListModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category','places_available' ]
+        fields = ['id','field','date','time','category','places_available', 'organizer', 'accepted']
 
 class MatchCreationModelSerializer(serializers.ModelSerializer):
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
@@ -201,7 +200,7 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
             if match.time <= validated_data['time'] <= final:
                 raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
 
-        validated_data['organizer'] = self.context['request'].user
+        # validated_data['organizer'] = self.context['request'].user
 
         match = Match.objects.create(**validated_data)
         match.save()
@@ -270,4 +269,77 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
         else:
             team.players.add(player)
             team.save()
+        return instance
+
+
+# !User AdminField
+    # ? User FieldAdmin Profile 
+
+class FieldFieldAdminRetriveModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(use_url=True)
+    services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
+    match_history = serializers.SerializerMethodField(source='get_matches')
+    pending_matches = serializers.SerializerMethodField()
+
+    def get_match_history(self, obj):
+        qs = Match.objects.filter(field__administrators__user= self.context['request'].user).filter(accepted=True)
+        return MatchListModelSerializer(qs, many=True).data
+
+    def get_pending_matches(self, obj):
+        qs = Match.objects.filter(field__administrators__user= self.context['request'].user).filter(accepted=False)
+        return MatchListModelSerializer(qs, many=True).data
+
+    class Meta:
+        model = Field 
+        fields = ['name','rent_cost','address','football_type','photo','services', 'match_history','pending_matches']
+
+class FieldAdminRetriveModelSerializer(serializers.ModelSerializer):
+    field = FieldFieldAdminRetriveModelSerializer()
+    photo = serializers.ImageField(use_url=True)
+    class Meta:
+        model = Administrator
+        fields = ['photo','field']
+
+class UserFieldAdminRetriveModelSerializer(serializers.ModelSerializer):
+    administrators = FieldAdminRetriveModelSerializer()
+    class Meta:
+        model = User 
+        fields = ['username','first_name','date_joined','administrators']
+
+    # ?User-FieldADmin Update Profile
+class FieldAdminPartialUpdateModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
+    class Meta:
+        model = Administrator
+        fields = ['photo']
+
+class UserAdminFieldPartialUpdateModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name']
+
+class FieldAddressModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddressField
+        fields = ['city','town','street','street_number']
+
+class FieldServicesListModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = '__all__'
+
+class FieldPartialUpdateModelSerializer(serializers.ModelSerializer):
+    address = FieldAddressModelSerializer()
+    photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
+
+    class Meta:
+        model = Field
+        fields = ['photo','name','rent_cost','address','football_type','fields_services']
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user.id
+        if user != instance.id:
+            raise serializers.ValidationError({"Fail":"Not your profile"})
+
+        address_validated = validated_data.pop('address')
         return instance

@@ -6,11 +6,12 @@ from .views import (
     # !User - Player - FieldAdmin
     UserPlayerCreateAPIView,
     UserRetriveAPIView,
-    UserPartialUpdateAPIView,
+    UserPlayerPartialUpdateAPIView,
     IdRetriveAuthToken,
     PlayerPositionListAPIView,
     UserOrganizedMatchesAPIView,
     UserFielAdminCreateAPIView,
+    UserFieldAdminRetriveAPIView,
 
     # !Match
     MatchListAPIView,
@@ -20,6 +21,7 @@ from .views import (
     # !Field
     FieldListAPIView,
     FieldRetriveAPIView,
+    FootballTypeListAPIView,
 )
 
 urlpatterns = [
@@ -28,11 +30,12 @@ urlpatterns = [
     path('signup_player/', UserPlayerCreateAPIView.as_view(), name='signup_player'),
     path('signup_fieldadmin/', UserFielAdminCreateAPIView.as_view(), name='signup_fieldadmin'),
 
-    # !Player
+    # !Player - FieldAdmin
     path('players/<int:pk>/', UserRetriveAPIView.as_view(), name='player' ),
-    path('players/update/<int:pk>/', UserPartialUpdateAPIView.as_view(), name='player_update'),
+    path('players/update/<int:pk>/', UserPlayerPartialUpdateAPIView.as_view(), name='player_update'),
     path('players/position/', PlayerPositionListAPIView.as_view(), name='player_list_position'),
     path('players/organized/<int:pk>/',UserOrganizedMatchesAPIView.as_view(), name='player_organized_list'),
+    path('fieldadmin/<int:pk>/', UserFieldAdminRetriveAPIView.as_view(), name='fieldadmin_retrive' ),
 
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
@@ -41,5 +44,6 @@ urlpatterns = [
 
    # !Field
    path('fields/', FieldListAPIView.as_view(), name='field_list'),
-   path('fields/<int:pk>/', FieldRetriveAPIView.as_view(), name='field_retrive')
+   path('fields/<int:pk>/', FieldRetriveAPIView.as_view(), name='field_retrive'),
+   path('footballtypes/',FootballTypeListAPIView.as_view(), name='footballtype_list'),
 ]
