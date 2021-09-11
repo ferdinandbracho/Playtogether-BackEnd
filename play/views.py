@@ -14,6 +14,7 @@ from .models import (
     Player,
     Administrator,
     Position,
+    Service,
 ) 
 from django.contrib.auth.models import User
 
@@ -37,6 +38,7 @@ from .serializers import (
     FieldListModelSerializer,
     FieldRetriveModelSerializer,
     FootballTypeRetriveModelSerializer,
+    FieldServicesListModelSerializer,
 )
 
 # !User - Player - FieldAdmin
@@ -173,4 +175,7 @@ class FootballTypeListAPIView(generics.ListAPIView):
     queryset = FootballType.objects.all()
     serializer_class = FootballTypeRetriveModelSerializer
 
+class FieldServiceListAPIView(generics.ListAPIView):
+    queryset = Service.objects.all()
+    serializer_class = FieldServicesListModelSerializer
 
