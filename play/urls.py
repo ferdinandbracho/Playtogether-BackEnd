@@ -22,6 +22,7 @@ from .views import (
     FieldListAPIView,
     FieldRetriveAPIView,
     FootballTypeListAPIView,
+    FieldServiceListAPIView,
 )
 
 urlpatterns = [
@@ -46,4 +47,6 @@ urlpatterns = [
    path('fields/', FieldListAPIView.as_view(), name='field_list'),
    path('fields/<int:pk>/', FieldRetriveAPIView.as_view(), name='field_retrive'),
    path('footballtypes/',FootballTypeListAPIView.as_view(), name='footballtype_list'),
+   path('service/',FieldServiceListAPIView.as_view(), name='service_list'),
+
 ]
