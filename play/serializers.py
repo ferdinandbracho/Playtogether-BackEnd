@@ -163,11 +163,26 @@ class FieldSelectedListModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Field
         fields = ['name','football_type']
+    
+class OrganizerRetriveModelSerializer(serializers.ModelSerializer):
+    fields_count = serializers.SerializerMethodField()
+    matches_count = serializers.SerializerMethodField()
+
+    def get_matches_count(self, obj):
+        return Match.objects.filter(team__players=obj.players).count()
+
+    def get_fields_count(self, obj):
+        return Match.objects.filter(team__players=obj.players).aggregate(Count('field_id', distinct=True))['field_id__count']
+    
+    class Meta:
+        model = User
+        fields = ['id','date_joined','username', 'fields_count', 'matches_count']
 
 class MatchListModelSerializer(serializers.ModelSerializer):
     field = FieldSelectedListModelSerializer()
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
     time = serializers.TimeField(required=True, input_formats=['%H:%M'])
+    organizer =OrganizerRetriveModelSerializer()
     places_available= serializers.SerializerMethodField()
 
     def get_places_available(self, obj):
