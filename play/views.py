@@ -1,5 +1,5 @@
 
-from rest_framework import generics
+from rest_framework import generics, serializers
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -42,6 +42,7 @@ from .serializers import (
     FieldManagerCreateModelSerializer,
     UserFieldManagerRetriveModelSerializer,
     UserFieldManagerPartialUpdateModelSerializer,
+    UpdateShowFieldModelSerializer,
 )
 
 # !User - Player 
@@ -183,3 +184,6 @@ class UserFieldManagerFieldPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserFieldManagerPartialUpdateModelSerializer
 
+class FieldShowManagerPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Field.objects.all()
+    serializer_class = UpdateShowFieldModelSerializer

@@ -26,6 +26,7 @@ from .views import (
     UserFieldManagerCreateAPIView,
     UserFieldManagerRetriveAPIView,
     UserFieldManagerFieldPartialUpdateAPIView,
+    FieldShowManagerPartialUpdateAPIView,
 )
 
 urlpatterns = [
@@ -54,5 +55,6 @@ urlpatterns = [
     path('signup_field_manager/', UserFieldManagerCreateAPIView.as_view(), name='signup_field_manager'),
     path('field_manager/<int:pk>/', UserFieldManagerRetriveAPIView.as_view(), name='field_manager_retrive' ),
     path('field_manager/update/<int:pk>/', UserFieldManagerFieldPartialUpdateAPIView.as_view(), name='field_manager_update' ),
+    path('field_manager/field_show/<int:pk>/', FieldShowManagerPartialUpdateAPIView.as_view(), name='field_manager_field_show_update' ),
 
 ]
