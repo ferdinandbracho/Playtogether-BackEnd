@@ -13,7 +13,6 @@ from .views import (
 
     # !Match
     MatchListAPIView,
-    # MatchCreationAPIView,
     MatchPlayerRetriveUpdateAPIView,
 
     # !Field
@@ -43,7 +42,6 @@ urlpatterns = [
 
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
-#    path('matches/create/', MatchCreationAPIView.as_view(), name='match_create'),
    path('matches/<int:pk>/',MatchPlayerRetriveUpdateAPIView.as_view(), name='match_retrive'),
 
    # !Field
