@@ -1,4 +1,5 @@
 
+from django.db.models import query
 from rest_framework import generics, serializers
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -43,6 +44,7 @@ from .serializers import (
     UserFieldManagerPartialUpdateModelSerializer,
     UpdateShowFieldModelSerializer,
     MatchCreationManagerModelSerializer,
+    MatchManagerUpdateModelSerializer,
 )
 
 # !User - Player 
@@ -169,6 +171,7 @@ class FieldServiceListAPIView(generics.ListAPIView):
 class UserFieldManagerCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = FieldManagerCreateModelSerializer
+    permission_classes = [IsAuthenticated]
 
 class UserFieldManagerRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -178,12 +181,19 @@ class UserFieldManagerRetriveAPIView(generics.RetrieveAPIView):
 class UserFieldManagerFieldPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserFieldManagerPartialUpdateModelSerializer
+    permission_classes = [IsAuthenticated]
 
 class FieldShowManagerPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Field.objects.all()
     serializer_class = UpdateShowFieldModelSerializer
+    permission_classes = [IsAuthenticated]
 
 class MatchCreationManagerAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchCreationManagerModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
+
+class MatchManagerUpdateAcceptedAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Match.objects.all()
+    serializer_class = MatchManagerUpdateModelSerializer
+    permission_classes = [IsAuthenticated]
