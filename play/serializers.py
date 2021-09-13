@@ -180,35 +180,35 @@ class MatchListModelSerializer(serializers.ModelSerializer):
         model = Match
         fields = ['id','field','date','time','category','places_available', 'active','organizer', 'accepted']
 
-class MatchCreationModelSerializer(serializers.ModelSerializer):
-    date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
-    time = serializers.TimeField(required=True, input_formats=['%H:%M'])
-    category = serializers.ChoiceField(choices=Match.CATEGORY)
+# class MatchCreationModelSerializer(serializers.ModelSerializer):
+#     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
+#     time = serializers.TimeField(required=True, input_formats=['%H:%M'])
+#     category = serializers.ChoiceField(choices=Match.CATEGORY)
 
-    class Meta:
-        model = Match
-        fields = ['id','field','date','time','category']
+#     class Meta:
+#         model = Match
+#         fields = ['id','field','date','time','category']
 
-    def create(self, validated_data):
-        duration = FootballType.objects.get(fields=validated_data['field']).duration
+#     def create(self, validated_data):
+#         duration = FootballType.objects.get(fields=validated_data['field']).duration
         
-        qs = Match.objects.filter(field=validated_data['field']).filter(date=validated_data['date'])
-        for match in qs:
-            final = (
-                (dt.datetime.combine(dt.date(1,1,1),match.time) + 
-                dt.timedelta(minutes=duration)).time()
-            )
-            if match.time <= validated_data['time'] <= final:
-                raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
+#         qs = Match.objects.filter(field=validated_data['field']).filter(date=validated_data['date'])
+#         for match in qs:
+#             final = (
+#                 (dt.datetime.combine(dt.date(1,1,1),match.time) + 
+#                 dt.timedelta(minutes=duration)).time()
+#             )
+#             if match.time <= validated_data['time'] <= final:
+#                 raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
 
-        match = Match.objects.create(**validated_data)
-        match.save()
-        team_a = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_a')
-        team_a.save()
-        team_b = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_b')
-        team_b.save()
-        match.team.add(team_a, team_b)
-        return match    
+#         match = Match.objects.create(**validated_data)
+#         match.save()
+#         team_a = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_a')
+#         team_a.save()
+#         team_b = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_b')
+#         team_b.save()
+#         match.team.add(team_a, team_b)
+#         return match    
 
     # ?Match internal view and actions
 class UserPlayerModelSerializer(serializers.ModelSerializer):
@@ -412,5 +412,32 @@ class UpdateShowFieldModelSerializer(serializers.ModelSerializer):
         model = Field
         fields = ['show']
 
-    # def update(self, instance, validated_data):
-    #     return  instance
+    # ?Create Matches as manager
+class MatchCreationManagerModelSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
+    time = serializers.TimeField(required=True, input_formats=['%H:%M'])
+
+    class Meta:
+        model = Match
+        fields = ['id','field','date','time']
+
+    def create(self, validated_data):
+        duration = FootballType.objects.get(fields=validated_data['field']).duration
+        
+        qs = Match.objects.filter(field=validated_data['field']).filter(date=validated_data['date'])
+        for match in qs:
+            final = (
+                (dt.datetime.combine(dt.date(1,1,1),match.time) + 
+                dt.timedelta(minutes=duration)).time()
+            )
+            if match.time <= validated_data['time'] <= final:
+                raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
+
+        match = Match.objects.create(**validated_data)
+        match.save()
+        team_a = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_a')
+        team_a.save()
+        team_b = Team.objects.create(name=f'{match.id}_{match.date}_{match.time}_b')
+        team_b.save()
+        match.team.add(team_a, team_b)
+        return match    
