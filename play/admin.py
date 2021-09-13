@@ -1,9 +1,8 @@
 from django.contrib import admin
 from .models import (
-    #! User - player -FieldlAdmin
+    #! User - player
     Player,
     Position,
-    Administrator,
 
     #! field
     Field,
@@ -14,10 +13,12 @@ from .models import (
     #! match
     Match,
     Team,
+
+    #! User - Manager
+    Manager,
 ) 
 
 admin.site.register(Player)
-admin.site.register(Administrator)
 admin.site.register(Position)
 admin.site.register(Field)
 admin.site.register(Service)
@@ -25,4 +26,5 @@ admin.site.register(AddressField)
 admin.site.register(FootballType)
 admin.site.register(Match)
 admin.site.register(Team)
+admin.site.register(Manager)
 

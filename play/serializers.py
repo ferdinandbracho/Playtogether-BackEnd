@@ -12,7 +12,7 @@ from .models import (
     Field,
     FootballType,
     Player,
-    Administrator,
+    Manager,
     Match,
     Position,
     Service,
@@ -20,7 +20,7 @@ from .models import (
 )
 from django.contrib.auth.models import User
 
-# !User - Player - FieldAdmin
+# !User - Player
     # ?User Creation
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,19 +34,6 @@ class UserModelSerializer(serializers.ModelSerializer):
         player.save()
         return user
 
-    # ?FieldAdmin 
-class FieldAdminCreateModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username','first_name', 'email', 'password']
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data, is_staff=True)
-        field = Field.objects.create()
-        administrator = Administrator.objects.create(user=user, field=field)
-        administrator.save()
-        return user
-        
     # ?User_Player Profile 
 class PlayerModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
@@ -133,7 +120,6 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
         fields = '__all__'
-
 
 # !Field
 class FootballTypeRetriveModelSerializer(serializers.ModelSerializer):
@@ -287,28 +273,48 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
         return instance
 
 
-# !User AdminField
-    # ? User FieldAdmin Profile 
+# !User FieldManager
+    # ?User Manager Creation
+class FieldManagerCreateModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username','first_name', 'email', 'password']
 
-class FieldFieldAdminRetriveModelSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data, is_staff=True)
+        address = AddressField.objects.create()
+        address.save()
+        field = Field.objects.create(address=address)
+        manager = Manager.objects.create(user=user, field=field)
+        manager.save()
+        return user
+
+    # ? User FieldManager Profile 
+class FieldAddressModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddressField
+        fields = ['city','town','street','street_number']
+
+class FieldFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(use_url=True)
     services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
     match_history = serializers.SerializerMethodField(source='get_matches')
     total_match_history = serializers.SerializerMethodField()
     pending_matches = serializers.SerializerMethodField()
+    address = FieldAddressModelSerializer()
 
     def get_total_match_history(self, obj):
         user = self.context['request'].user
-        return Match.objects.filter(field__administrators__user= user).filter(accepted=True).count()
+        return Match.objects.filter(field__managers__user= user).filter(accepted=True).count()
 
     def get_match_history(self, obj):
         user = self.context['request'].user
-        qs = Match.objects.filter(field__administrators__user= user).filter(accepted=True)
+        qs = Match.objects.filter(field__managers__user= user).filter(accepted=True)
         return MatchListModelSerializer(qs, many=True).data
 
     def get_pending_matches(self, obj):
         user = self.context['request'].user
-        qs = Match.objects.filter(field__administrators__user= user).filter(accepted=False)
+        qs = Match.objects.filter(field__managers__user= user).filter(accepted=False)
         return MatchListModelSerializer(qs, many=True).data
 
     class Meta:
@@ -325,36 +331,20 @@ class FieldFieldAdminRetriveModelSerializer(serializers.ModelSerializer):
                     'match_history',
                     'pending_matches']
 
-class FieldAdminRetriveModelSerializer(serializers.ModelSerializer):
-    field = FieldFieldAdminRetriveModelSerializer()
+class FieldManagerRetriveModelSerializer(serializers.ModelSerializer):
+    field = FieldFieldManagerRetriveModelSerializer()
     photo = serializers.ImageField(use_url=True)
     class Meta:
-        model = Administrator
+        model = Manager
         fields = ['photo','field']
 
-class UserFieldAdminRetriveModelSerializer(serializers.ModelSerializer):
-    administrators = FieldAdminRetriveModelSerializer()
+class UserFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
+    managers = FieldManagerRetriveModelSerializer()
     class Meta:
         model = User 
-        fields = ['username','first_name','date_joined','administrators']
+        fields = ['username','first_name','date_joined','managers']
 
-    # ?User-FieldADmin Update Profile
-class FieldAdminPartialUpdateModelSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
-    class Meta:
-        model = Administrator
-        fields = ['photo']
-
-class UserAdminFieldPartialUpdateModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['first_name']
-
-class FieldAddressModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AddressField
-        fields = ['city','town','street','street_number']
-
+    # ?User-FieldManager Update Profile
 class FieldServicesListModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
@@ -363,15 +353,46 @@ class FieldServicesListModelSerializer(serializers.ModelSerializer):
 class FieldPartialUpdateModelSerializer(serializers.ModelSerializer):
     address = FieldAddressModelSerializer()
     photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
-
     class Meta:
         model = Field
         fields = ['photo','name','rent_cost','address','football_type','fields_services']
+
+class FieldManagerFieldPhotoPartialUpdateModelSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(use_url=True, validators=[validate_media_size])
+    field = FieldPartialUpdateModelSerializer()
+    class Meta:
+        model = Manager
+        fields = ['photo','field']
+
+class UserFieldManagerPartialUpdateModelSerializer(serializers.ModelSerializer):
+    manager = FieldManagerFieldPhotoPartialUpdateModelSerializer(source='managers')
+    manager_name = serializers.CharField(source='first_name')
+    class Meta:
+        model = User
+        fields = ['manager_name','manager']
 
     def update(self, instance, validated_data):
         user = self.context['request'].user.id
         if user != instance.id:
             raise serializers.ValidationError({"Fail":"Not your profile"})
 
-        address_validated = validated_data.pop('address')
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+    
+
+        # manager_validated = validated_data.pop('managers')   
+        # manager = instance.managers
+
+        # instance.first_name = validated_data.get('first_name', instance.first_name)
+
+        # manager.photo = manager_validated.get('photo', manager_validated.photo)
+        # manager.field.photo = manager_validated['field'].get('photo', manager.field.photo)
+        # manager.field.rest_cost = manager_validated['field'].get('rest_cost', manager.field.rest_cost)
+        # manager.field.football_type= manager_validated['field'].football_type.get('photo', manager.field.football_type)
+
+        # manager.field.address.city = manager_validated['field'].address.city.get('photo', manager.field.address.city)
+        # manager.field.address.town= manager_validated['field'].address.town.get('photo', manager.field.address.town)
+        # manager.field.address.street= manager_validated['field'].address.street.get('photo', manager.field.address.street)
+        # manager.field.address.street_number= manager_validated['field'].address.street_number.get('photo', manager.field.address.street_number)        
+        instance.save()
         return instance
+

@@ -43,25 +43,14 @@ class Player(models.Model):
     photo = models.ImageField(blank=True, upload_to=media_path,default='avatar_default.png', validators=[validate_media_size])
 
     def __str__(self):
-        return self.user.first_name
-
-# !Administrator 
-class Administrator(models.Model):
-    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='administrators')
-    field = models.OneToOneField(to='Field', on_delete=models.CASCADE, related_name='administrators')
-    photo = models.ImageField(blank=True, upload_to=media_path,default='admin_default.png', validators=[validate_media_size])
-    date_created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.user.first_name
-    
+        return self.user.first_name 
 
 # !Field
 class AddressField(models.Model):
-    city = models.CharField(max_length=50)
-    town = models.CharField(max_length=50)
-    street = models.CharField(max_length=50)
-    street_number = models.CharField(max_length=10)
+    city = models.CharField(max_length=50, blank=True)
+    town = models.CharField(max_length=50, blank=True)
+    street = models.CharField(max_length=50, blank=True)
+    street_number = models.CharField(max_length=10, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -137,3 +126,13 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
+# !manager 
+class Manager(models.Model):
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='managers')
+    field = models.OneToOneField(to='Field', on_delete=models.CASCADE, related_name='managers')
+    photo = models.ImageField(blank=True, upload_to=media_path,default='manager_default.png', validators=[validate_media_size])
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.first_name
