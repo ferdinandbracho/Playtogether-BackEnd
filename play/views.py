@@ -12,7 +12,7 @@ from .models import (
     FootballType,
     Match,
     Player,
-    Administrator,
+    Manager,
     Position,
     Service,
 ) 
@@ -20,14 +20,12 @@ from django.contrib.auth.models import User
 
 # !Serializers 
 from .serializers import (
-    # !User - Player - FieldlAdmin
+    # !User - Player - FieldlManager
     UserModelSerializer,
     UserPlayerRetriveModelSerializer,
     UserPlayerPartialUpdateModelSerializer,
     PlayerPositionModelSerializer,
     UserOrganizedMatchesModelSerializer,
-    FieldAdminCreateModelSerializer,
-    UserFieldAdminRetriveModelSerializer,
 
     # !match
     MatchListModelSerializer,
@@ -39,9 +37,15 @@ from .serializers import (
     FieldRetriveModelSerializer,
     FootballTypeRetriveModelSerializer,
     FieldServicesListModelSerializer,
+
+    # !User - Manager 
+    FieldManagerCreateModelSerializer,
+    UserFieldManagerRetriveModelSerializer,
+    UserFieldManagerPartialUpdateModelSerializer,
 )
 
-# !User - Player - FieldAdmin
+# !User - Player 
+    # ?User Player - FieldManager
 class IdRetriveAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
@@ -51,17 +55,16 @@ class IdRetriveAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         model = Player
         if user.is_staff:
-            model = Administrator
+            model = Manager
         instance_photo = model.objects.get(user=user.pk)
 
         return Response({
             'token': token.key,
             'user_id': user.pk,
             'player_photo' : str(instance_photo.photo),
-            'field_admin' : user.is_staff,
+            'field_manager' : user.is_staff,
         })
 
-    # ?User Player 
 class UserPlayerCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
@@ -69,7 +72,7 @@ class UserPlayerCreateAPIView(generics.CreateAPIView):
 class UserRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserPlayerRetriveModelSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return User.objects.filter(id=self.request.user.id)
@@ -96,19 +99,6 @@ class UserOrganizedMatchesAPIView(generics.ListAPIView):
 class PlayerPositionListAPIView(generics.ListAPIView):
     queryset = Position.objects.all()
     serializer_class = PlayerPositionModelSerializer
-
-    # ?FieldAdmin
-class UserFielAdminCreateAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = FieldAdminCreateModelSerializer
-
-class UserFieldAdminRetriveAPIView(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserFieldAdminRetriveModelSerializer
-    permission_classes = [IsAuthenticated]
-
-class UserFieldAdminFieldPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
-    pass
 
 # !Match
 class MatchListAPIView(generics.ListAPIView):
@@ -178,4 +168,18 @@ class FootballTypeListAPIView(generics.ListAPIView):
 class FieldServiceListAPIView(generics.ListAPIView):
     queryset = Service.objects.all()
     serializer_class = FieldServicesListModelSerializer
+
+# !User Field Manager 
+class UserFieldManagerCreateAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = FieldManagerCreateModelSerializer
+
+class UserFieldManagerRetriveAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserFieldManagerRetriveModelSerializer
+    # permission_classes = [IsAuthenticated]
+
+class UserFieldManagerFieldPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserFieldManagerPartialUpdateModelSerializer
 
