@@ -412,7 +412,7 @@ class MatchCreationManagerModelSerializer(serializers.ModelSerializer):
         match.team.add(team_a, team_b)
         return match    
 
-    # ?Update Accepted and organizer Maganger 
+    # ?Update Accepted-Delete and organizer Maganger 
 class MatchManagerUpdateModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match

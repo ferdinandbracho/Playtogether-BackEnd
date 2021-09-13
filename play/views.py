@@ -193,7 +193,7 @@ class MatchCreationManagerAPIView(generics.CreateAPIView):
     serializer_class = MatchCreationManagerModelSerializer
     permission_classes = [IsAuthenticated]
 
-class MatchManagerUpdateAcceptedAPIView(generics.RetrieveUpdateAPIView):
+class MatchManagerUpdateAcceptedDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchManagerUpdateModelSerializer
     permission_classes = [IsAuthenticated]

@@ -27,7 +27,7 @@ from .views import (
     UserFieldManagerFieldPartialUpdateAPIView,
     FieldShowManagerPartialUpdateAPIView,
     MatchCreationManagerAPIView,
-    MatchManagerUpdateAcceptedAPIView,
+    MatchManagerUpdateAcceptedDestroyAPIView,
 )
 
 urlpatterns = [
@@ -57,6 +57,6 @@ urlpatterns = [
     path('field_manager/update/<int:pk>/', UserFieldManagerFieldPartialUpdateAPIView.as_view(), name='field_manager_update' ),
     path('field_manager/field_show/<int:pk>/', FieldShowManagerPartialUpdateAPIView.as_view(), name='field_manager_field_show_update' ),
     path('field_manager/match_creation/', MatchCreationManagerAPIView.as_view(), name='field_manager_match_creation' ),
-    path('field_manager/match_update/<int:pk>/', MatchManagerUpdateAcceptedAPIView.as_view(), name='field_manager_match_update' ),
+    path('field_manager/match_update/<int:pk>/', MatchManagerUpdateAcceptedDestroyAPIView.as_view(), name='field_manager_match_update' ),
 
 ]
