@@ -178,7 +178,7 @@ class MatchListModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category','places_available', 'organizer', 'accepted']
+        fields = ['id','field','date','time','category','places_available', 'active','organizer', 'accepted']
 
 class MatchCreationModelSerializer(serializers.ModelSerializer):
     date = serializers.DateField(required=True, input_formats=["%d-%m-%Y"])
@@ -200,8 +200,6 @@ class MatchCreationModelSerializer(serializers.ModelSerializer):
             )
             if match.time <= validated_data['time'] <= final:
                 raise serializers.ValidationError("Ese horario en la cancha seleccionada ya esta ocupado, selecciona otro horario!")
-
-        # validated_data['organizer'] = self.context['request'].user
 
         match = Match.objects.create(**validated_data)
         match.save()
@@ -309,17 +307,18 @@ class FieldFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
 
     def get_match_history(self, obj):
         user = self.context['request'].user
-        qs = Match.objects.filter(field__managers__user= user).filter(accepted=True)
+        qs = Match.objects.filter(field__managers__user= user).filter(accepted=True).order_by('date', 'time')
         return MatchListModelSerializer(qs, many=True).data
 
     def get_pending_matches(self, obj):
         user = self.context['request'].user
-        qs = Match.objects.filter(field__managers__user= user).filter(accepted=False)
+        qs = Match.objects.filter(field__managers__user= user).filter(accepted=False).order_by('organizer', 'date', 'time')
         return MatchListModelSerializer(qs, many=True).data
 
     class Meta:
         model = Field 
         fields = [
+                    'id',
                     'name',
                     'rent_cost',
                     'address',
@@ -327,9 +326,10 @@ class FieldFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
                     'photo',
                     'services',
                     'show',
+                    'pending_matches',
                     'total_match_history',
-                    'match_history',
-                    'pending_matches']
+                    'match_history'
+                    ]
 
 class FieldManagerRetriveModelSerializer(serializers.ModelSerializer):
     field = FieldFieldManagerRetriveModelSerializer()
@@ -406,3 +406,11 @@ class UserFieldManagerPartialUpdateModelSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    # ?Update Field "show" in Field
+class UpdateShowFieldModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Field
+        fields = ['show']
+
+    # def update(self, instance, validated_data):
+    #     return  instance
