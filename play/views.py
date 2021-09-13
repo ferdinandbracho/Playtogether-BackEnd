@@ -29,7 +29,7 @@ from .serializers import (
 
     # !match
     MatchListModelSerializer,
-    MatchCreationModelSerializer,
+    # MatchCreationModelSerializer,
     MatchTeamPlayerModelSerializer,
 
     # !Field
@@ -43,6 +43,7 @@ from .serializers import (
     UserFieldManagerRetriveModelSerializer,
     UserFieldManagerPartialUpdateModelSerializer,
     UpdateShowFieldModelSerializer,
+    MatchCreationManagerModelSerializer,
 )
 
 # !User - Player 
@@ -137,10 +138,10 @@ class MatchListAPIView(generics.ListAPIView):
         response.data.insert(0,{'total_matches': len(response.data)})
         return response
     
-class MatchCreationAPIView(generics.CreateAPIView):
-    queryset = Match.objects.all()
-    serializer_class = MatchCreationModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+# class MatchCreationAPIView(generics.CreateAPIView):
+#     queryset = Match.objects.all()
+#     serializer_class = MatchCreationModelSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
 
 class MatchPlayerRetriveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Match.objects.all()
@@ -187,3 +188,8 @@ class UserFieldManagerFieldPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
 class FieldShowManagerPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Field.objects.all()
     serializer_class = UpdateShowFieldModelSerializer
+
+class MatchCreationManagerAPIView(generics.CreateAPIView):
+    queryset = Match.objects.all()
+    serializer_class = MatchCreationManagerModelSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]

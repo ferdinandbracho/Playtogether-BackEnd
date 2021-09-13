@@ -95,7 +95,7 @@ class Match(models.Model):
         ('femenil', 'Femenil'),
         ('mixto', 'Mixto')
     )
-    category = models.CharField(max_length=30, choices=CATEGORY)
+    category = models.CharField(max_length=30, choices=CATEGORY, blank=True)
     active = models.BooleanField(default=True)
     team = models.ManyToManyField(to='Team',related_name='matches')
     organizer = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='matches',blank=True, null=True)

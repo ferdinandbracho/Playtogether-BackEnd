@@ -13,7 +13,7 @@ from .views import (
 
     # !Match
     MatchListAPIView,
-    MatchCreationAPIView,
+    # MatchCreationAPIView,
     MatchPlayerRetriveUpdateAPIView,
 
     # !Field
@@ -27,6 +27,7 @@ from .views import (
     UserFieldManagerRetriveAPIView,
     UserFieldManagerFieldPartialUpdateAPIView,
     FieldShowManagerPartialUpdateAPIView,
+    MatchCreationManagerAPIView,
 )
 
 urlpatterns = [
@@ -42,7 +43,7 @@ urlpatterns = [
 
     # !Match
    path('matches/', MatchListAPIView.as_view(), name='match' ),
-   path('matches/create/', MatchCreationAPIView.as_view(), name='match_create'),
+#    path('matches/create/', MatchCreationAPIView.as_view(), name='match_create'),
    path('matches/<int:pk>/',MatchPlayerRetriveUpdateAPIView.as_view(), name='match_retrive'),
 
    # !Field
@@ -56,5 +57,6 @@ urlpatterns = [
     path('field_manager/<int:pk>/', UserFieldManagerRetriveAPIView.as_view(), name='field_manager_retrive' ),
     path('field_manager/update/<int:pk>/', UserFieldManagerFieldPartialUpdateAPIView.as_view(), name='field_manager_update' ),
     path('field_manager/field_show/<int:pk>/', FieldShowManagerPartialUpdateAPIView.as_view(), name='field_manager_field_show_update' ),
+    path('field_manager/match_creation/', MatchCreationManagerAPIView.as_view(), name='field_manager_match_creation' ),
 
 ]
