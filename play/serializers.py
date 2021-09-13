@@ -365,34 +365,44 @@ class FieldManagerFieldPhotoPartialUpdateModelSerializer(serializers.ModelSerial
         fields = ['photo','field']
 
 class UserFieldManagerPartialUpdateModelSerializer(serializers.ModelSerializer):
-    manager = FieldManagerFieldPhotoPartialUpdateModelSerializer(source='managers')
+    managers = FieldManagerFieldPhotoPartialUpdateModelSerializer()
     manager_name = serializers.CharField(source='first_name')
     class Meta:
         model = User
-        fields = ['manager_name','manager']
+        fields = ['manager_name','managers']
 
     def update(self, instance, validated_data):
         user = self.context['request'].user.id
         if user != instance.id:
             raise serializers.ValidationError({"Fail":"Not your profile"})
 
+        manager_validated = validated_data.pop('managers')
+        field_validated = manager_validated.pop('field')
+        address_validated = field_validated.pop('address')
+
+        manager = instance.managers
+        field = manager.field
+        address = field.address
+
         instance.first_name = validated_data.get('first_name', instance.first_name)
-    
+        manager.photo = manager_validated.get('photo', manager.photo)
+        field.photo = field_validated.get('photo', field.photo)
+        field.name = field_validated.get('name', field.name)
+        field.rent_cost = field_validated.get('rent_cost', field.rent_cost)
+        field.football_type = field_validated.get('football_type','field.football_type')
+        address.city = address_validated.get('city', address.city)
+        address.town = address_validated.get('town', address.town)
+        address.street = address_validated.get('street', address.street)
+        address.street_number = address_validated.get('street_number', address.street_number)
 
-        # manager_validated = validated_data.pop('managers')   
-        # manager = instance.managers
+        for fs in field.fields_services.all():
+            field.fields_services.remove(fs)
 
-        # instance.first_name = validated_data.get('first_name', instance.first_name)
-
-        # manager.photo = manager_validated.get('photo', manager_validated.photo)
-        # manager.field.photo = manager_validated['field'].get('photo', manager.field.photo)
-        # manager.field.rest_cost = manager_validated['field'].get('rest_cost', manager.field.rest_cost)
-        # manager.field.football_type= manager_validated['field'].football_type.get('photo', manager.field.football_type)
-
-        # manager.field.address.city = manager_validated['field'].address.city.get('photo', manager.field.address.city)
-        # manager.field.address.town= manager_validated['field'].address.town.get('photo', manager.field.address.town)
-        # manager.field.address.street= manager_validated['field'].address.street.get('photo', manager.field.address.street)
-        # manager.field.address.street_number= manager_validated['field'].address.street_number.get('photo', manager.field.address.street_number)        
+        for fs in field_validated.get('fields_services'):
+            field.fields_services.add(fs)
+      
+        manager.save()
+        field.save()
         instance.save()
         return instance
 

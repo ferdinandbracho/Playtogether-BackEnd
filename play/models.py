@@ -10,6 +10,7 @@ def media_path(instance, filename):
 
 def media_path_field(instance, filename):
     return 'field_{0}/img'.format(instance.id)  
+ 
 
 def validate_media_size(value):
     media_size = value.size
@@ -76,7 +77,7 @@ class Field(models.Model):
     rent_cost = models.FloatField(blank=True, null=True)
     address = models.OneToOneField(to=AddressField, on_delete=CASCADE, blank=True, null=True,related_name='fields')
     football_type = models.ForeignKey(to=FootballType, on_delete=models.CASCADE, blank=True, null=True, related_name='fields')
-    photo = models.ImageField(blank=True, upload_to=media_path_field, default='field_default.jpg')
+    photo = models.ImageField(blank=True, upload_to=media_path_field, default='default_field.png')
     fields_services = models.ManyToManyField(to=Service, blank=True, related_name='fields')
     show = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -131,7 +132,7 @@ class Team(models.Model):
 class Manager(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='managers')
     field = models.OneToOneField(to='Field', on_delete=models.CASCADE, related_name='managers')
-    photo = models.ImageField(blank=True, upload_to=media_path,default='manager_default.png', validators=[validate_media_size])
+    photo = models.ImageField(blank=True, upload_to=media_path ,default='manager_default.png', validators=[validate_media_size])
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
