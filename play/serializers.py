@@ -131,9 +131,15 @@ class FieldRetriveModelSerializer(serializers.ModelSerializer):
     address = serializers.CharField()
     football_type = FootballTypeRetriveModelSerializer()
     services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
+    matches = serializers.SerializerMethodField()
+
+    def get_matches(self, obj):
+        qs = Match.objects.filter(field=obj.id).filter(organizer__isnull=True)
+        return MatchListModelSerializer(qs, many=True).data
+
     class Meta:
         model = Field
-        fields = ['id','name','rent_cost','address','football_type','services']
+        fields = ['id','name','rent_cost','address','football_type','services','matches']
 
 class FieldListModelSerializer(serializers.ModelSerializer):
     address = serializers.CharField()
@@ -240,6 +246,11 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
             team.save()
         return instance
 
+    # ?Update Accepted-Delete-organizer-category
+class MatchUpdateModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Match
+        fields = ['organizer','accepted','category']
 
 # !User FieldManager
     # ?User Manager Creation
@@ -411,11 +422,3 @@ class MatchCreationManagerModelSerializer(serializers.ModelSerializer):
         team_b.save()
         match.team.add(team_a, team_b)
         return match    
-
-    # ?Update Accepted-Delete and organizer Maganger 
-class MatchManagerUpdateModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Match
-        fields = ['organizer','accepted']
-
- #     category = serializers.ChoiceField(choices=Match.CATEGORY)
