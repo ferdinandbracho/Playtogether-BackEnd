@@ -105,7 +105,7 @@ class PlayerPositionListAPIView(generics.ListAPIView):
 
 # !Match
 class MatchListAPIView(generics.ListAPIView):
-    queryset =  Match.objects.all()
+    queryset =  Match.objects.filter(accepted=True)
     serializer_class = MatchListModelSerializer
 
     def get_queryset(self):
