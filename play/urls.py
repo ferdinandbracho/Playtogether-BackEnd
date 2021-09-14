@@ -14,6 +14,7 @@ from .views import (
     # !Match
     MatchListAPIView,
     MatchPlayerRetriveUpdateAPIView,
+    MatchUpdateAPIView,
 
     # !Field
     FieldListAPIView,
@@ -27,7 +28,6 @@ from .views import (
     UserFieldManagerFieldPartialUpdateAPIView,
     FieldShowManagerPartialUpdateAPIView,
     MatchCreationManagerAPIView,
-    MatchManagerUpdateAcceptedDestroyAPIView,
 )
 
 urlpatterns = [
@@ -42,14 +42,15 @@ urlpatterns = [
     path('players/organized/<int:pk>/',UserOrganizedMatchesAPIView.as_view(), name='player_organized_list'),
 
     # !Match
-   path('matches/', MatchListAPIView.as_view(), name='match' ),
-   path('matches/<int:pk>/',MatchPlayerRetriveUpdateAPIView.as_view(), name='match_retrive'),
+    path('matches/', MatchListAPIView.as_view(), name='match' ),
+    path('matches/<int:pk>/',MatchPlayerRetriveUpdateAPIView.as_view(), name='match_retrive'),
+    path('match_update/<int:pk>/', MatchUpdateAPIView.as_view(), name='match_update' ),
 
    # !Field
-   path('fields/', FieldListAPIView.as_view(), name='field_list'),
-   path('fields/<int:pk>/', FieldRetriveAPIView.as_view(), name='field_retrive'),
-   path('footballtypes/',FootballTypeListAPIView.as_view(), name='footballtype_list'),
-   path('service/',FieldServiceListAPIView.as_view(), name='service_list'),
+    path('fields/', FieldListAPIView.as_view(), name='field_list'),
+    path('fields/<int:pk>/', FieldRetriveAPIView.as_view(), name='field_retrive'),
+    path('footballtypes/',FootballTypeListAPIView.as_view(), name='footballtype_list'),
+    path('service/',FieldServiceListAPIView.as_view(), name='service_list'),
 
     # !User - Manager
     path('signup_field_manager/', UserFieldManagerCreateAPIView.as_view(), name='signup_field_manager'),
@@ -57,6 +58,4 @@ urlpatterns = [
     path('field_manager/update/<int:pk>/', UserFieldManagerFieldPartialUpdateAPIView.as_view(), name='field_manager_update' ),
     path('field_manager/field_show/<int:pk>/', FieldShowManagerPartialUpdateAPIView.as_view(), name='field_manager_field_show_update' ),
     path('field_manager/match_creation/', MatchCreationManagerAPIView.as_view(), name='field_manager_match_creation' ),
-    path('field_manager/match_update/<int:pk>/', MatchManagerUpdateAcceptedDestroyAPIView.as_view(), name='field_manager_match_update' ),
-
 ]

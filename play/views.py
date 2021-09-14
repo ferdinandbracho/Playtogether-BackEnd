@@ -31,6 +31,7 @@ from .serializers import (
     # !match
     MatchListModelSerializer,
     MatchTeamPlayerModelSerializer,
+    MatchUpdateModelSerializer,
 
     # !Field
     FieldListModelSerializer,
@@ -44,7 +45,6 @@ from .serializers import (
     UserFieldManagerPartialUpdateModelSerializer,
     UpdateShowFieldModelSerializer,
     MatchCreationManagerModelSerializer,
-    MatchManagerUpdateModelSerializer,
 )
 
 # !User - Player 
@@ -150,6 +150,11 @@ class MatchPlayerRetriveUpdateAPIView(generics.RetrieveUpdateAPIView):
         match.datetime_checker()
         return super().get_queryset()
 
+class MatchUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Match.objects.all()
+    serializer_class = MatchUpdateModelSerializer
+    permission_classes = [IsAuthenticated]
+
 # !Field 
 class FieldListAPIView(generics.ListAPIView):
     queryset = Field.objects.all()
@@ -174,7 +179,6 @@ class FieldServiceListAPIView(generics.ListAPIView):
 class UserFieldManagerCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = FieldManagerCreateModelSerializer
-    permission_classes = [IsAuthenticated]
 
 class UserFieldManagerRetriveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -194,9 +198,4 @@ class FieldShowManagerPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
 class MatchCreationManagerAPIView(generics.CreateAPIView):
     queryset = Match.objects.all()
     serializer_class = MatchCreationManagerModelSerializer
-    permission_classes = [IsAuthenticated]
-
-class MatchManagerUpdateAcceptedDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Match.objects.all()
-    serializer_class = MatchManagerUpdateModelSerializer
     permission_classes = [IsAuthenticated]

@@ -246,6 +246,11 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
             team.save()
         return instance
 
+    # ?Update Accepted-Delete-organizer-category
+class MatchUpdateModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Match
+        fields = ['organizer','accepted','category']
 
 # !User FieldManager
     # ?User Manager Creation
@@ -417,11 +422,3 @@ class MatchCreationManagerModelSerializer(serializers.ModelSerializer):
         team_b.save()
         match.team.add(team_a, team_b)
         return match    
-
-    # ?Update Accepted-Delete and organizer Maganger 
-class MatchManagerUpdateModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Match
-        fields = ['organizer','accepted']
-
- #     category = serializers.ChoiceField(choices=Match.CATEGORY)
