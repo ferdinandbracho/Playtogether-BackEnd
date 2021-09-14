@@ -42,6 +42,7 @@ class Player(models.Model):
     )
     dominant_food = models.CharField(max_length=50, choices=FOOT, blank=True)
     photo = models.ImageField(blank=True, upload_to=media_path,default='avatar_default.png', validators=[validate_media_size])
+    teammates = models.ManyToManyField('self', related_name='friends', symmetrical=False)
 
     def __str__(self):
         return self.user.first_name 

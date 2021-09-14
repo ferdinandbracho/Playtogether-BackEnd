@@ -1,6 +1,5 @@
 
-from django.db.models import query
-from rest_framework import generics, serializers
+from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -27,6 +26,8 @@ from .serializers import (
     UserPlayerPartialUpdateModelSerializer,
     PlayerPositionModelSerializer,
     UserOrganizedMatchesModelSerializer,
+    PlayerTeammatesUpdateModelSerializer,
+    PlayerTeammatesList,
 
     # !match
     MatchListModelSerializer,
@@ -102,6 +103,14 @@ class UserOrganizedMatchesAPIView(generics.ListAPIView):
 class PlayerPositionListAPIView(generics.ListAPIView):
     queryset = Position.objects.all()
     serializer_class = PlayerPositionModelSerializer
+
+class PlayerTeammatesUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = PlayerTeammatesUpdateModelSerializer
+
+class PlayerTeammatesRetrive(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = PlayerTeammatesList
 
 # !Match
 class MatchListAPIView(generics.ListAPIView):
