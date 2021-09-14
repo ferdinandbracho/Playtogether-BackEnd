@@ -40,8 +40,8 @@ class UserModelSerializer(serializers.ModelSerializer):
 
         message = Mail(
             from_email='playtogether.app.mx@gmail.com',
-            to_emails='ferdinand.bracho@gmail.com',
-            subject='Sending with Twilio SendGrid is Fun',
+            to_emails= validated_data['email'],
+            subject='Bienvenido a PlaytogetherAPP',
             html_content='<strong>and easy to do anywhere, even with Python</strong>')
         try:
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
@@ -412,9 +412,10 @@ class UserFieldManagerPartialUpdateModelSerializer(serializers.ModelSerializer):
             for fs in field_validated.get('fields_services'):
                 field.fields_services.add(fs)
       
+        instance.save()
         manager.save()
         field.save()
-        instance.save()
+        address.save()
         return instance
 
     # ?Update Field "show" in Field
