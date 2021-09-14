@@ -1,6 +1,5 @@
 
-from django.db.models import query
-from rest_framework import generics, serializers
+from rest_framework import generics
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authtoken.views import ObtainAuthToken

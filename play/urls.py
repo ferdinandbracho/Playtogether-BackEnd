@@ -1,7 +1,7 @@
 
 from django.urls import path
 
-# Views 
+# !Views 
 from .views import (
     # !User - Player
     UserPlayerCreateAPIView,
@@ -44,7 +44,6 @@ urlpatterns = [
     path('players/organized/<int:pk>/',UserOrganizedMatchesAPIView.as_view(), name='player_organized_list'),
     path('players/teammates/<int:pk>/',PlayerTeammatesUpdateAPIView.as_view(), name='player_teammates_update'),
     path('players/teammates_list/<int:pk>/',PlayerTeammatesRetrive.as_view(), name='player_teammates_list'),
-
 
     # !Match
     path('matches/', MatchListAPIView.as_view(), name='match' ),

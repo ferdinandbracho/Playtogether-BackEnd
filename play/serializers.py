@@ -3,7 +3,6 @@ from rest_framework import serializers
 from django.db.models.aggregates import Count
 import datetime as dt
 
-from rest_framework.response import Response
 from .models import AddressField, validate_media_size
 
 # !Sendgrid
@@ -142,11 +141,10 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
         model = Position
         fields = '__all__'
 
+    # ?User Friends-Teammates
 class PlayerTeammatesList(serializers.ModelSerializer):
     total_followers = serializers.SerializerMethodField()
     total_followings= serializers.SerializerMethodField()
-    # list_followers = serializers.SerializerMethodField()
-    # list_followings = serializers.SerializerMethodField()
 
     def get_total_followers(self, obj):
         player =  obj.players
