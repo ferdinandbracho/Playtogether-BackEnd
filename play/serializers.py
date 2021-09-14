@@ -44,15 +44,15 @@ class PlayerModelSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(use_url=True)
 
     def get_matches(self, obj):
-        qs = Match.objects.filter(team__players=obj).order_by('date')
+        qs = Match.objects.filter(team__players=obj).filter(accepted=True).order_by('date')
         result = MatchListModelSerializer(qs, many=True).data
         return result 
 
     def get_matches_count(self, obj):
-        return Match.objects.filter(team__players=obj).count()
+        return Match.objects.filter(team__players=obj).filter(accepted=True).count()
 
     def get_fields_count(self, obj):
-        return Match.objects.filter(team__players=obj).aggregate(Count('field_id', distinct=True))['field_id__count']
+        return Match.objects.filter(team__players=obj).filter(accepted=True).aggregate(Count('field_id', distinct=True))['field_id__count']
     
     class Meta:
         model = Player
@@ -208,7 +208,7 @@ class UserOrganizedMatchesModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category','active','date_created']
+        fields = ['id','field','date','time','category','active','date_created','accepted']
 
 class PlayerRetriveModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
