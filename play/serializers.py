@@ -341,7 +341,6 @@ class FieldAddressModelSerializer(serializers.ModelSerializer):
 
 class FieldFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(use_url=True)
-    services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
     match_history = serializers.SerializerMethodField(source='get_matches')
     total_match_history = serializers.SerializerMethodField()
     pending_matches = serializers.SerializerMethodField()
@@ -370,7 +369,7 @@ class FieldFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
                     'address',
                     'football_type',
                     'photo',
-                    'services',
+                    'fields_services',
                     'show',
                     'pending_matches',
                     'total_match_history',
