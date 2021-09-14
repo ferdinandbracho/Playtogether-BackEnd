@@ -385,11 +385,11 @@ class UserFieldManagerPartialUpdateModelSerializer(serializers.ModelSerializer):
         address.street = address_validated.get('street', address.street)
         address.street_number = address_validated.get('street_number', address.street_number)
 
-        for fs in field.fields_services.all():
-            field.fields_services.remove(fs)
-
-        for fs in field_validated.get('fields_services'):
-            field.fields_services.add(fs)
+        if field.fields_services and field_validated.get('fields_services') != None:
+            for fs in field.fields_services.all():
+                field.fields_services.remove(fs)
+            for fs in field_validated.get('fields_services'):
+                field.fields_services.add(fs)
       
         manager.save()
         field.save()
