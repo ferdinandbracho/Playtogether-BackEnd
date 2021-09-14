@@ -2,6 +2,8 @@
 from rest_framework import serializers
 from django.db.models.aggregates import Count
 import datetime as dt
+
+from rest_framework.response import Response
 from .models import AddressField, validate_media_size
 
 # !Sendgrid
@@ -51,9 +53,7 @@ class UserModelSerializer(serializers.ModelSerializer):
             print(response.headers)
         except Exception as e:
             print(e.message)
-
         return user
-
 
     # ?User_Player Profile 
 class PlayerModelSerializer(serializers.ModelSerializer):
@@ -141,6 +141,44 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
         fields = '__all__'
+
+class PlayerTeammatesList(serializers.ModelSerializer):
+    total_followers = serializers.SerializerMethodField()
+    total_followings= serializers.SerializerMethodField()
+    # list_followers = serializers.SerializerMethodField()
+    # list_followings = serializers.SerializerMethodField()
+
+    def get_total_followers(self, obj):
+        player =  obj.players
+        return player.friends.all().count()
+    
+    def get_total_followings(self, obj):
+        player =  obj.players
+        return player.teammates.all().count()
+            
+    class Meta:
+        model = User 
+        fields = ['total_followers','total_followings']
+
+class PlayerTeammatesUpdateModelSerializer(serializers.ModelSerializer):
+    response = serializers.SerializerMethodField()
+
+    def get_response(self, obj):
+        return 'Update Success'
+    class Meta:
+        model = User
+        fields = ['response']
+
+    def update(self, instance, validated_data):
+        logged_user = self.context['request'].user.players
+        player_to = instance.players
+        
+        if player_to.friends.filter(pk=logged_user.pk).exists():
+            player_to.friends.remove(logged_user)
+        else:
+            player_to.friends.add(logged_user)
+
+        return instance
 
 # !Field
 class FootballTypeRetriveModelSerializer(serializers.ModelSerializer):
@@ -286,6 +324,7 @@ class MatchUpdateModelSerializer(serializers.ModelSerializer):
         mails = [instance.field.managers.user.email]
         if instance.organizer:
             mails += instance.organizer.email 
+
         message = Mail(
             from_email='playtogether.app.mx@gmail.com',
             to_emails= mails,

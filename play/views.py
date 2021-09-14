@@ -27,6 +27,8 @@ from .serializers import (
     UserPlayerPartialUpdateModelSerializer,
     PlayerPositionModelSerializer,
     UserOrganizedMatchesModelSerializer,
+    PlayerTeammatesUpdateModelSerializer,
+    PlayerTeammatesList,
 
     # !match
     MatchListModelSerializer,
@@ -102,6 +104,14 @@ class UserOrganizedMatchesAPIView(generics.ListAPIView):
 class PlayerPositionListAPIView(generics.ListAPIView):
     queryset = Position.objects.all()
     serializer_class = PlayerPositionModelSerializer
+
+class PlayerTeammatesUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = PlayerTeammatesUpdateModelSerializer
+
+class PlayerTeammatesRetrive(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = PlayerTeammatesList
 
 # !Match
 class MatchListAPIView(generics.ListAPIView):
