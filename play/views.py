@@ -35,7 +35,7 @@ from .serializers import (
 
     # !Field
     FieldListModelSerializer,
-    FieldRetriveModelSerializer,
+    FieldRetriveMatchListModelSerializer,
     FootballTypeRetriveModelSerializer,
     FieldServicesListModelSerializer,
 
@@ -165,7 +165,7 @@ class FieldListAPIView(generics.ListAPIView):
 
 class FieldRetriveAPIView(generics.RetrieveAPIView):
     queryset = Field.objects.all()
-    serializer_class = FieldRetriveModelSerializer
+    serializer_class = FieldRetriveMatchListModelSerializer
 
 class FootballTypeListAPIView(generics.ListAPIView):
     queryset = FootballType.objects.all()
