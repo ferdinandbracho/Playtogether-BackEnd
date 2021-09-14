@@ -4,6 +4,11 @@ from django.db.models.aggregates import Count
 import datetime as dt
 from .models import AddressField, validate_media_size
 
+# !Sendgrid
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 # !Django-Countries
 from django_countries.serializer_fields import CountryField
 
@@ -32,7 +37,23 @@ class UserModelSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         player = Player.objects.create(user=user)
         player.save()
+
+        message = Mail(
+            from_email='playtogether.app.mx@gmail.com',
+            to_emails='ferdinand.bracho@gmail.com',
+            subject='Sending with Twilio SendGrid is Fun',
+            html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e.message)
+
         return user
+
 
     # ?User_Player Profile 
 class PlayerModelSerializer(serializers.ModelSerializer):
