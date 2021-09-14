@@ -127,7 +127,7 @@ class FootballTypeRetriveModelSerializer(serializers.ModelSerializer):
         model = FootballType
         fields = '__all__'
 
-class FieldRetriveModelSerializer(serializers.ModelSerializer):
+class FieldRetriveMatchListModelSerializer(serializers.ModelSerializer):
     address = serializers.CharField()
     football_type = FootballTypeRetriveModelSerializer()
     services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
@@ -140,6 +140,15 @@ class FieldRetriveModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Field
         fields = ['id','name','rent_cost','address','football_type','services','matches']
+
+class FieldRetriveModelSerializer(serializers.ModelSerializer):
+    address = serializers.CharField()
+    football_type = FootballTypeRetriveModelSerializer()
+    services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
+
+    class Meta:
+        model = Field
+        fields = ['id','name','rent_cost','address','football_type','services']
 
 class FieldListModelSerializer(serializers.ModelSerializer):
     address = serializers.CharField()
@@ -221,7 +230,7 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
     field = FieldRetriveModelSerializer()
     class Meta:
         model = Match
-        fields = ['id','date','time','category','organizer','field','team','active']
+        fields = ['id','date','time','category','organizer','field','team','active','accepted']
 
     def update(self, instance, validated_data):
 
