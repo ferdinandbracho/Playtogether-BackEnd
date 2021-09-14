@@ -41,8 +41,8 @@ class UserModelSerializer(serializers.ModelSerializer):
         message = Mail(
             from_email='playtogether.app.mx@gmail.com',
             to_emails= validated_data['email'],
-            subject='Bienvenido a PlaytogetherAPP',
-            html_content='<strong>and easy to do anywhere, even with Python</strong>')
+            subject='Bienvenido a la experiencia PlaytogetherAPP',
+            html_content=f'<strong><h1>{validated_data["username"]} Bienvenido a Playtogether</h1></strong>')
         try:
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
             response = sg.send(message)
@@ -296,6 +296,21 @@ class FieldManagerCreateModelSerializer(serializers.ModelSerializer):
         field = Field.objects.create(address=address)
         manager = Manager.objects.create(user=user, field=field)
         manager.save()
+
+        message = Mail(
+            from_email='playtogether.app.mx@gmail.com',
+            to_emails= validated_data['email'],
+            subject='Bienvenido a la experiencia PlaytogetherAPP',
+            html_content=f'<strong><h1>{validated_data["username"]} Bienvenido a Playtogether</h1></strong>')
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e.message)
+
         return user
 
     # ? User FieldManager Profile 
