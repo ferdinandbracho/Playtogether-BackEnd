@@ -281,6 +281,26 @@ class MatchUpdateModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
         fields = ['organizer','accepted','category']
+    
+    def update(self, instance, validated_data):
+        mails = [instance.field.managers.user.email]
+        if instance.organizer:
+            mails += instance.organizer.email 
+        message = Mail(
+            from_email='playtogether.app.mx@gmail.com',
+            to_emails= mails,
+            subject='Revisa tus partidos',
+            html_content=f'<strong><h1>Tu partido cambio de estatus</h1></strong>')
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e.message)
+
+        return super().update(instance, validated_data)
 
 # !User FieldManager
     # ?User Manager Creation
@@ -321,7 +341,6 @@ class FieldAddressModelSerializer(serializers.ModelSerializer):
 
 class FieldFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(use_url=True)
-    services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
     match_history = serializers.SerializerMethodField(source='get_matches')
     total_match_history = serializers.SerializerMethodField()
     pending_matches = serializers.SerializerMethodField()
@@ -350,7 +369,7 @@ class FieldFieldManagerRetriveModelSerializer(serializers.ModelSerializer):
                     'address',
                     'football_type',
                     'photo',
-                    'services',
+                    'fields_services',
                     'show',
                     'pending_matches',
                     'total_match_history',
