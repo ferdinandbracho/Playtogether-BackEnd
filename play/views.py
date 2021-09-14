@@ -155,6 +155,9 @@ class FieldListAPIView(generics.ListAPIView):
     queryset = Field.objects.all()
     serializer_class = FieldListModelSerializer
 
+    def get_queryset(self):
+        return self.queryset.filter(show=True)
+
 class FieldRetriveAPIView(generics.RetrieveAPIView):
     queryset = Field.objects.all()
     serializer_class = FieldRetriveModelSerializer

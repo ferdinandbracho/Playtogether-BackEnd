@@ -131,9 +131,15 @@ class FieldRetriveModelSerializer(serializers.ModelSerializer):
     address = serializers.CharField()
     football_type = FootballTypeRetriveModelSerializer()
     services = serializers.StringRelatedField(many=True, source='fields_services',read_only=True)
+    matches = serializers.SerializerMethodField()
+
+    def get_matches(self, obj):
+        qs = Match.objects.filter(field=obj.id).filter(organizer__isnull=True)
+        return MatchListModelSerializer(qs, many=True).data
+
     class Meta:
         model = Field
-        fields = ['id','name','rent_cost','address','football_type','services']
+        fields = ['id','name','rent_cost','address','football_type','services','matches']
 
 class FieldListModelSerializer(serializers.ModelSerializer):
     address = serializers.CharField()
