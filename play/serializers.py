@@ -220,7 +220,7 @@ class FieldSelectedListModelSerializer(serializers.ModelSerializer):
     football_type = serializers.CharField()
     class Meta:
         model = Field
-        fields = ['name','football_type']
+        fields = ['id','name','football_type']
     
 class OrganizerRetriveModelSerializer(serializers.ModelSerializer):
     fields_count = serializers.SerializerMethodField()
@@ -244,9 +244,12 @@ class MatchListModelSerializer(serializers.ModelSerializer):
     places_available= serializers.SerializerMethodField()
 
     def get_places_available(self, obj):
-        registered =  Match.objects.filter(id=obj.id).aggregate(registered=Count('team__players'))['registered']
-        max_player = obj.field.football_type.max_players
-        return max_player - registered
+        result = None
+        if obj.field.football_type:
+            registered =  Match.objects.filter(id=obj.id).aggregate(registered=Count('team__players'))['registered']
+            max_player = obj.field.football_type.max_players
+            result = max_player - registered
+        return result
 
     class Meta:
         model = Match
@@ -262,10 +265,19 @@ class UserPlayerModelSerializer(serializers.ModelSerializer):
     # ?Match Organized - Player
 class UserOrganizedMatchesModelSerializer(serializers.ModelSerializer):
     field = FieldSelectedListModelSerializer()
+    places_available= serializers.SerializerMethodField()
+
+    def get_places_available(self, obj):
+        result = None
+        if obj.field.football_type:
+            registered =  Match.objects.filter(id=obj.id).aggregate(registered=Count('team__players'))['registered']
+            max_player = obj.field.football_type.max_players
+            result = max_player - registered
+        return result
 
     class Meta:
         model = Match
-        fields = ['id','field','date','time','category','active','date_created','accepted']
+        fields = ['id','field','date','time','category','active','date_created','accepted', 'places_available']
 
 class PlayerRetriveModelSerializer(serializers.ModelSerializer):
     player_id = serializers.CharField(source='id')
@@ -494,6 +506,18 @@ class UpdateShowFieldModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Field
         fields = ['show']
+
+    def update(self, instance, validated_data):
+
+        if (
+            instance.football_type == None or
+            instance.name == None or 
+            instance.rent_cost == None
+        ):
+            instance.show = False
+            raise serializers.ValidationError("Agrega: nombre, costo de renta y tipo de futbol a tu cancha para poder mostrarla")
+        else:
+            return super().update(instance, validated_data)
 
     # ?Create Matches as manager
 class MatchCreationManagerModelSerializer(serializers.ModelSerializer):
