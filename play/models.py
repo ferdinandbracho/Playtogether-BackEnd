@@ -120,6 +120,7 @@ class Match(models.Model):
             self.active = True
             self.save()
         return self
+
     
 class Team(models.Model):
     name = models.CharField(max_length=50)
