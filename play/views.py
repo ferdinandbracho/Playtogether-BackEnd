@@ -170,7 +170,7 @@ class FieldListAPIView(generics.ListAPIView):
     serializer_class = FieldListModelSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(show=True)
+        return self.queryset.filter(show=True).filter(matches__isnull=False).filter(matches__active=True)
 
 class FieldRetriveAPIView(generics.RetrieveAPIView):
     queryset = Field.objects.all()
