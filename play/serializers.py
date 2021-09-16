@@ -345,6 +345,7 @@ class MatchTeamPlayerModelSerializer(serializers.ModelSerializer):
 
     # ?Update Accepted-Delete-organizer-category
 class MatchUpdateModelSerializer(serializers.ModelSerializer):
+    category = serializers.ChoiceField(choices=Match.CATEGORY)
     class Meta:
         model = Match
         fields = ['organizer','accepted','category']
@@ -371,6 +372,7 @@ class MatchUpdateModelSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(e.message)
 
+        instance.save()
         return instance
 
 # !User FieldManager
