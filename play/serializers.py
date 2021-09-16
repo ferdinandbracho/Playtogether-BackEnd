@@ -350,10 +350,12 @@ class MatchUpdateModelSerializer(serializers.ModelSerializer):
         fields = ['organizer','accepted','category']
     
     def update(self, instance, validated_data):
+        instance.organizer = validated_data.get('organizer', instance.organizer)
+        instance.accepted = validated_data.get('accepted', instance.accepted)
+
         mails = [instance.field.managers.user.email]
-        print(mails)
         if instance.organizer:
-            mails += instance.organizer.email 
+            mails.append(instance.organizer.email )
 
         message = Mail(
             from_email='playtogether.app.mx@gmail.com',
@@ -369,7 +371,7 @@ class MatchUpdateModelSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(e.message)
 
-        return super().update(instance, validated_data)
+        return instance
 
 # !User FieldManager
     # ?User Manager Creation
