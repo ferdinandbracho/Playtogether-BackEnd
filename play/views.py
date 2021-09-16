@@ -78,8 +78,8 @@ class UserRetriveAPIView(generics.RetrieveAPIView):
     serializer_class = UserPlayerRetriveModelSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return User.objects.filter(id=self.request.user.id)
 
 class UserPlayerPartialUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
@@ -170,7 +170,7 @@ class FieldListAPIView(generics.ListAPIView):
     serializer_class = FieldListModelSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(show=True).filter(matches__isnull=False).filter(matches__active=True)
+        return self.queryset.filter(show=True).filter(matches__isnull=False).filter(matches__active=True).distinct()
 
 class FieldRetriveAPIView(generics.RetrieveAPIView):
     queryset = Field.objects.all()
