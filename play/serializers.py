@@ -142,9 +142,16 @@ class PlayerPositionModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     # ?User Friends-Teammates
+class userTeammatesRetriveModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','username']
+
 class PlayerTeammatesList(serializers.ModelSerializer):
     total_followers = serializers.SerializerMethodField()
     total_followings= serializers.SerializerMethodField()
+    list_followers = serializers.SerializerMethodField()
+    list_followings = serializers.SerializerMethodField()
 
     def get_total_followers(self, obj):
         player =  obj.players
@@ -153,10 +160,22 @@ class PlayerTeammatesList(serializers.ModelSerializer):
     def get_total_followings(self, obj):
         player =  obj.players
         return player.teammates.all().count()
+
+    def get_list_followers(self, obj):
+        player =  obj.players
+        qs = player.friends.all() 
+        qs = [x.user for x in qs]
+        return userTeammatesRetriveModelSerializer(qs, many=True).data
+
+    def get_list_followings(self, obj):
+        player =  obj.players
+        qs = player.teammates.all() 
+        qs = [x.user for x in qs]
+        return userTeammatesRetriveModelSerializer(qs, many=True).data
             
     class Meta:
         model = User 
-        fields = ['total_followers','total_followings']
+        fields = ['total_followers','list_followers','total_followings','list_followings']
 
 class PlayerTeammatesUpdateModelSerializer(serializers.ModelSerializer):
     response = serializers.SerializerMethodField()
