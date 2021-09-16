@@ -332,6 +332,7 @@ class MatchUpdateModelSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         mails = [instance.field.managers.user.email]
+        print(mails)
         if instance.organizer:
             mails += instance.organizer.email 
 
