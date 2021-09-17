@@ -353,6 +353,7 @@ class MatchUpdateModelSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.organizer = validated_data.get('organizer', instance.organizer)
         instance.accepted = validated_data.get('accepted', instance.accepted)
+        instance.category = validated_data.get('category', instance.category)
 
         mails = [instance.field.managers.user.email]
         if instance.organizer:
