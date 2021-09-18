@@ -1,8 +1,8 @@
 # Playtogether-BackEnd  
 
 ### <img src="https://github.com/ferdinandbracho/Playtogether-BackEnd/blob/0507040ba870d9d837a77e305c1e31f52e891c09/Imagenes%20Readme/Logo%20PT.jpg" alt="Logo" width="250">
-Playtogether es una plataforma web responsiva que busca hacer relaciones a través del deporte conectando personas con la misma pasión, agilizando el proceso de organizacion y busqueda de partidos, no solo para los jugadores si no tambien para lan canchas que quieren poner a disposiciones sus intalaciones y horarios para la organizacion de partidos  
-Para entusiastas del futbol amateur para sumar u organizar partidos y para canchas para poner a disposicion sus instacaliones para tales eventos 
+Playtogether es una plataforma web responsiva que busca hacer relaciones a través del deporte conectando personas con la misma pasión, agilizando el proceso de organización y búsqueda de partidos, no solo para los jugadores sino también para las canchas que quieren poner a disposiciones sus instalaciones y horarios para la organización de partidos
+Para entusiastas del fútbol amateur para sumar u organizar partidos y para canchas para poner a disposición sus instalaciones para tales eventos
 
 ## Live Site
 [Playtogether.com](https://playtogetherapp.mybluemix.net/)
@@ -30,22 +30,23 @@ Para entusiastas del futbol amateur para sumar u organizar partidos y para canch
 ## Modelado de datos 
 <img src="https://github.com/ferdinandbracho/Playtogether-BackEnd/blob/0507040ba870d9d837a77e305c1e31f52e891c09/Imagenes%20Readme/Modelado%20de%20datos%20Playtogether.jpg" alt="Modelado de datos" width="720">
 
-## Principales Funcionalidades del app 
-* Usuarios 
-  *  Jugador 
-  *  Administrador de canchas 
+## Principales Funcionalidades del app
+* Usuarios
+  *  Jugador
+  *  Administrador de canchas
 *  Cuenta y perfil de usuario (tanto para jugador como administrador)
-*  Administrador puede cargar cancha con sus detalles y fotografias 
-*  Administrador puede crear espacos disponibles para la organizacion de partidos 
-*  Administrador puede administrador sus partidos (aceptar, rechazar, eliminar)
-*  Administrador puede ver historial de partidos creados en sus histalaciones 
-*  Jugador puede cambiar detalles de sus perfil y agregar detalles como jugador 
+*  Administrador puede cargar cancha con sus detalles y fotografías
+*  Administrador puede crear espacios disponibles para la organización de partidos
+*  Administrador puede administrar sus partidos (aceptar, rechazar, eliminar)
+*  Administrador puede ver historial de partidos creados en sus instalaciones
+*  Jugador puede cambiar detalles de sus perfil y agregar detalles como jugador
 *  Jugador puede ver el historial de sus partidos
-*  Jugador puede Organizar partidos en los espacios disponibles creados por los administradores 
-*  Jugador puede buscar partidos (filtrador por diferentes criterios)
-*  Jugador puede sumarse a partidos organizados por el o por otros jugadores 
-*  Jugador puede acceder al perfil de otros jugadores 
-*  Jugador puede seguir o ser seguido por otros jugadores 
+*  Jugador puede Organizar partidos en los espacios disponibles creados por los administradores
+*  Jugador puede buscar partidos (filtrado por diferentes criterios)
+*  Jugador puede sumarse a partidos organizados por el o por otros jugadores
+*  Jugador puede acceder al perfil de otros jugadores
+*  Jugador puede seguir o ser seguido por otros jugadores
+
 
 ## Capturas Varias 
 <img src="https://github.com/ferdinandbracho/Playtogether-BackEnd/blob/0507040ba870d9d837a77e305c1e31f52e891c09/Imagenes%20Readme/landing.jpg" alt="Modelado de datos" width="500">
