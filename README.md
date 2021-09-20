@@ -33,6 +33,7 @@ Playtogether es una plataforma web responsiva que busca hacer relaciones a trav�
 * Usuarios
   *  Jugador
   *  Administrador de canchas
+*  Mailiing para notificar el ingreso a la plataforma asi para cuando cambia de estatus tu partido
 *  Cuenta y perfil de usuario (tanto para jugador como administrador)
 *  Administrador puede cargar cancha con sus detalles y fotografías
 *  Administrador puede crear espacios disponibles para la organización de partidos
