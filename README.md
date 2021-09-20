@@ -1,7 +1,7 @@
 # Playtogether-BackEnd  
 
 ### <img src="https://github.com/ferdinandbracho/Playtogether-BackEnd/blob/0507040ba870d9d837a77e305c1e31f52e891c09/Imagenes%20Readme/Logo%20PT.jpg" alt="Logo" width="250">
-Playtogether es una plataforma web responsiva que busca hacer relaciones a través del deporte conectando personas con la misma pasión, agilizando el proceso de organización y búsqueda de partidos, no solo para los jugadores sino también para las canchas que quieren poner a disposiciones sus instalaciones y horarios.
+Playtogether es una plataforma web responsiva que busca hacer relaciones a través del deporte conectando personas con la misma pasión, agilizando el proceso de organización y búsqueda de partidos, no solo para los jugadores sino también para las canchas que quieren poner a disposicion sus instalaciones y horarios.
 
 ## Live Site
 [Playtogether.com](https://playtogetherapp.mybluemix.net/)
